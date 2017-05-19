@@ -241,7 +241,11 @@ public class SettingsServiceBean {
         /**
          * Whether Export should exclude FieldType.EMAIL
          */
-        ExcludeEmailFromExport;
+        ExcludeEmailFromExport,
+        /*
+         Location and name of HomePage customization file
+        */
+        HomePageCustomizationFile;
         
         @Override
         public String toString() {

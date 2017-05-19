@@ -44,6 +44,8 @@
 
                 <h:form id="dataverseForm">
                     <!-- Edit Mode -->
+                    <o:resourceInclude path="/CustomizationFilesServlet?customFileType=homePage" />
+                    
                     <ui:fragment rendered="#{DataversePage.editMode == 'INFO'}">
                         <p:focus context="dataverseForm"/>
                         <!-- Sample Block -->
