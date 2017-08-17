@@ -210,10 +210,16 @@ public class MailServiceBean implements java.io.Serializable {
                 return ResourceBundle.getBundle("Bundle").getString("notification.email.create.dataverse.subject");
             case REQUESTFILEACCESS:
                 return ResourceBundle.getBundle("Bundle").getString("notification.email.request.file.access.subject");
+            case REQUESTEDFILEACCESS:
+                return ResourceBundle.getBundle("Bundle").getString("notification.email.requested.file.access.subject");
             case GRANTFILEACCESS:
                 return ResourceBundle.getBundle("Bundle").getString("notification.email.grant.file.access.subject");
             case REJECTFILEACCESS:
                 return ResourceBundle.getBundle("Bundle").getString("notification.email.rejected.file.access.subject");
+            case REFERFILEACCESS:
+                return ResourceBundle.getBundle("Bundle").getString("notification.email.refer.file.access.subject");
+            case REFERREDFILEACCESS:
+                return ResourceBundle.getBundle("Bundle").getString("notification.email.referred.file.access.subject");
             case MAPLAYERUPDATED:
                 return ResourceBundle.getBundle("Bundle").getString("notification.email.update.maplayer");
             case CREATEDS:
@@ -381,6 +387,13 @@ public class MailServiceBean implements java.io.Serializable {
                 String[] paramArrayRequestFileAccess = {datafile.getOwner().getDisplayName(), getDatasetManageFileAccessLink(datafile)};
                 messageText += MessageFormat.format(pattern, paramArrayRequestFileAccess);
                 return messageText;
+            case REQUESTEDFILEACCESS:
+                datafile = (DataFile) targetObject;
+                dataset = datafile.getOwner();
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.requestedFileAccess");
+                String[] paramArrayRequestedFileAccess = {dataset.getDisplayName(),getDatasetLink(dataset)};
+                messageText += MessageFormat.format(pattern, paramArrayRequestedFileAccess);
+                return messageText;
             case GRANTFILEACCESS:
                 dataset = (Dataset) targetObject;
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.grantFileAccess");
@@ -392,6 +405,18 @@ public class MailServiceBean implements java.io.Serializable {
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.rejectFileAccess");
                 String[] paramArrayRejectFileAccess = {dataset.getDisplayName(), getDatasetLink(dataset)};
                 messageText += MessageFormat.format(pattern, paramArrayRejectFileAccess);
+                return messageText;
+            case REFERFILEACCESS:
+                datafile = (DataFile) targetObject;
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.referFileAccess");
+                String[] paramArrayReferFileAccess = {datafile.getOwner().getDisplayName(), getDatasetManageFileAccessLink(datafile)};
+                messageText += MessageFormat.format(pattern, paramArrayReferFileAccess);
+                return messageText;
+            case REFERREDFILEACCESS:
+                datafile = (DataFile) targetObject;
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.referredFileAccess");
+                String[] paramArrayReferredFileAccess = {datafile.getOwner().getDisplayName(), getDatasetManageFileAccessLink(datafile)};
+                messageText += MessageFormat.format(pattern, paramArrayReferredFileAccess);
                 return messageText;
             case CREATEDS:
                 version =  (DatasetVersion) targetObject;
@@ -486,7 +511,10 @@ public class MailServiceBean implements java.io.Serializable {
                 return dataset;
             case CREATEDV:
                 return dataverseService.find(userNotification.getObjectId());
+            case REQUESTEDFILEACCESS:
             case REQUESTFILEACCESS:
+            case REFERFILEACCESS:
+            case REFERREDFILEACCESS:    
                 return dataFileService.find(userNotification.getObjectId());
             case GRANTFILEACCESS:
             case REJECTFILEACCESS:

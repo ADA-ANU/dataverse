@@ -8,8 +8,13 @@ package edu.harvard.iq.dataverse;
 import edu.harvard.iq.dataverse.authorization.Permission;
 import edu.harvard.iq.dataverse.authorization.users.AuthenticatedUser;
 import edu.harvard.iq.dataverse.authorization.users.GuestUser;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
+import java.util.Date;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -33,7 +38,9 @@ public class FileDownloadHelper implements java.io.Serializable {
     
     @EJB
     FileDownloadServiceBean  fileDownloadService;
-
+    
+    @EJB
+    DataFileServiceBean datafileService;
     
     private final Map<Long, Boolean> fileDownloadPermissionMap = new HashMap<>(); // { FileMetadata.id : Boolean } 
 
@@ -191,7 +198,47 @@ public class FileDownloadHelper implements java.io.Serializable {
         
     }    
     
-    
+    public void requestAccessWithGuestbook(GuestbookResponse guestbookResponse){
+        
+        Dataset ds = null;
+        java.sql.Timestamp responseTime = new Timestamp(new Date().getTime()); //want all of them to have the same response date
+        String downloadType = "Request Access " + responseTime;
+        
+        if (guestbookResponse != null && guestbookResponse.getDataFile() != null     ){
+            guestbookResponse.setDownloadtype(downloadType);
+            fileDownloadService.writeGuestbookResponseRecord(guestbookResponse);
+        
+            if( fileDownloadService.requestAccess(guestbookResponse.getDataFile().getId()) ){
+                fileDownloadService.sendRequestFileAccessNotification(guestbookResponse.getDataFile().getOwner(), guestbookResponse.getDataFile().getId());     
+            }
+        }
+        
+        if (guestbookResponse != null && guestbookResponse.getSelectedFileIds() != null){
+            List<String> list = new ArrayList<>(Arrays.asList(guestbookResponse.getSelectedFileIds().split(",")));
+
+            DataFile df = null;
+            Long lastFileId = null;
+            
+            for (String idAsString : list) {
+                
+                df = datafileService.find(new Long(idAsString));
+                if (df != null) {
+                    
+                    guestbookResponse.setDownloadtype(downloadType);
+                    guestbookResponse.setDataFile(df);
+                    fileDownloadService.writeGuestbookResponseRecord(guestbookResponse);
+                    fileDownloadService.requestAccess(df.getId());
+                    lastFileId = df.getId();
+                }
+             
+            }
+            
+            if(lastFileId != null){
+                fileDownloadService.sendRequestFileAccessNotification(df.getOwner(), lastFileId);
+            }
+        }
+    }
+   
     //todo: potential cleanup - are these methods needed?
     public DataverseSession getSession() {
         return session;

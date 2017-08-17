@@ -3,6 +3,8 @@ body.widget-view {margin-bottom:54px;}
 body .ui-widget {font-size: inherit;}
 .ui-widget-content a {color: #428BCA;}
 .ui-widget-content a:hover, .ui-widget-content a:focus {color: #2A6496;}
+div.ui-row-toggler span {cursor:pointer;color: #428BCA;text-decoration:none;}
+div.ui-row-toggler span:hover {text-decoration:underline;color: #2A6496;}
 
 /* -------- TEMPLATE -------- */
 .panelgridHeaderTable {width:100%;}

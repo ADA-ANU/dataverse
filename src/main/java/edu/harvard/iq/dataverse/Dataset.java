@@ -55,7 +55,8 @@ public class Dataset extends DvObjectContainer {
     private String protocol;
     private String authority;
     private String doiSeparator;
-
+    private String guestbookWorkflowPoint;
+    
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date globalIdCreateTime;
     @Temporal(value = TemporalType.TIMESTAMP)
@@ -146,6 +147,14 @@ public class Dataset extends DvObjectContainer {
     public void setDoiSeparator(String doiSeparator) {
         this.doiSeparator = doiSeparator;
     }
+    
+    public void setGuestbookWorkflowPoint(String gbWorkflowPoint){
+        this.guestbookWorkflowPoint = gbWorkflowPoint;
+    }
+    
+    public String getGuestbookWorkflowPoint(){
+        return this.guestbookWorkflowPoint;
+    }
 
     public Date getGlobalIdCreateTime() {
         return globalIdCreateTime;
@@ -188,12 +197,10 @@ public class Dataset extends DvObjectContainer {
     }
 
     public List<DataFile> getFiles() {
-        //logger.info("getFiles() on dataset "+this.getId());
         return files;
     }
 
     public void setFiles(List<DataFile> files) {
-        logger.info("setFiles() on dataset "+this.getId());
         this.files = files;
     }
 

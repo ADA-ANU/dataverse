@@ -12,6 +12,7 @@ import edu.harvard.iq.dataverse.authorization.RoleAssignee;
 import edu.harvard.iq.dataverse.authorization.RoleAssigneeDisplayInfo;
 import edu.harvard.iq.dataverse.authorization.groups.Group;
 import edu.harvard.iq.dataverse.authorization.groups.GroupServiceBean;
+import edu.harvard.iq.dataverse.authorization.groups.impl.explicit.ExplicitGroup;
 import edu.harvard.iq.dataverse.authorization.groups.impl.explicit.ExplicitGroupServiceBean;
 import edu.harvard.iq.dataverse.authorization.users.AuthenticatedUser;
 import edu.harvard.iq.dataverse.engine.command.exception.CommandException;
@@ -20,12 +21,11 @@ import edu.harvard.iq.dataverse.engine.command.impl.AssignRoleCommand;
 import edu.harvard.iq.dataverse.engine.command.impl.RevokeRoleCommand;
 import edu.harvard.iq.dataverse.util.JsfHelper;
 import static edu.harvard.iq.dataverse.util.JsfHelper.JH;
+import edu.harvard.iq.dataverse.util.SystemConfig;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,6 +57,8 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
     @EJB
     DataFileServiceBean datafileService;
     @EJB
+    GuestbookResponseServiceBean guestbookResponseService;
+    @EJB
     DataverseRoleServiceBean roleService;
     @EJB
     RoleAssigneeServiceBean roleAssigneeService;
@@ -72,6 +74,8 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
     UserNotificationServiceBean userNotificationService;    
     @EJB
     EjbDataverseEngine commandEngine;
+    @EJB
+    SystemConfig systemConfig;
     @Inject
     DataverseRequestServiceBean dvRequestService;
     @Inject
@@ -83,11 +87,11 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
     @Inject
     DataverseSession session;
 
-    Dataset dataset = new Dataset(); 
+    Dataset dataset = new Dataset();
     private final TreeMap<RoleAssignee,List<RoleAssignmentRow>> roleAssigneeMap = new TreeMap<>();
     private final TreeMap<DataFile,List<RoleAssignmentRow>> fileMap = new TreeMap<>();
-    private final TreeMap<AuthenticatedUser,List<DataFile>> fileAccessRequestMap = new TreeMap<>();    
-
+    private final TreeMap<AuthenticatedUser,List<DataFile>> fileAccessRequestMap = new TreeMap<>();
+    
     public Dataset getDataset() {
         return dataset;
     }
@@ -108,7 +112,6 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
         return fileAccessRequestMap;
     }
     
-    
     public String init() {
         if (dataset.getId() != null) {
             dataset = datasetService.find(dataset.getId());
@@ -118,7 +121,7 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
         if (dataset == null) {
             return permissionsWrapper.notFound();
         }
-
+        
         if (!permissionService.on(dataset).has(Permission.ManageDatasetPermissions)) {
             return permissionsWrapper.notAuthorized();
         }
@@ -131,7 +134,7 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
         roleAssigneeMap.clear();
         fileMap.clear();
         fileAccessRequestMap.clear();        
-               
+        
         for (DataFile file : dataset.getFiles()) {
             // only include if the file is restricted (or it's draft version is restricted)
             //Added a null check in case there are files that have no metadata records SEK 
@@ -151,18 +154,18 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
                 
                 // populate the file access requests map
                 for (AuthenticatedUser au : file.getFileAccessRequesters()) {
+                        
                         List<DataFile> requestedFiles = fileAccessRequestMap.get(au);
                         if (requestedFiles == null) {
                             requestedFiles = new ArrayList<>();
                             fileAccessRequestMap.put(au, requestedFiles);
                         }
-
-                        requestedFiles.add(file);                    
-                    
+                  
+                        requestedFiles.add(file);
+                        
                 }
             }  
-        }
-        
+        }  
     }
     
     private void addFileToRoleAssignee(RoleAssignment assignment) {
@@ -256,26 +259,32 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
     
     // internal method used by removeRoleAssignments
     private void revokeRole(Long roleAssignmentId) {
+        RoleAssignment ra = em.find(RoleAssignment.class, roleAssignmentId);
+        java.util.ResourceBundle propsBundle = java.util.ResourceBundle.getBundle("Bundle");
+        
         try {
-            RoleAssignment ra = em.find(RoleAssignment.class, roleAssignmentId);
             commandEngine.submit(new RevokeRoleCommand(ra, dvRequestService.getDataverseRequest()));
-            JsfHelper.addSuccessMessage(ra.getRole().getName() + " role for " + roleAssigneeService.getRoleAssignee(ra.getAssigneeIdentifier()).getDisplayInfo().getTitle() + " was removed.");
+            String successMsg = java.text.MessageFormat.format(propsBundle.getString("file.revokeRole.successMessage"),ra.getRole().getName(),roleAssigneeService.getRoleAssignee(ra.getAssigneeIdentifier()).getDisplayInfo().getTitle());
+            JsfHelper.addSuccessMessage(successMsg);   
         } catch (PermissionException ex) {
-            JH.addMessage(FacesMessage.SEVERITY_ERROR, "The role assignment was not able to be removed.", "Permissions " + ex.getRequiredPermissions().toString() + " missing.");
+            String excpSummary = propsBundle.getString("file.revokeRole.permissionsException.summary");
+            String excpDetails = java.text.MessageFormat.format(propsBundle.getString("file.revokeRole.permissionsException.details"),ex.getRequiredPermissions().toString());
+            JH.addMessage(FacesMessage.SEVERITY_ERROR,excpSummary,excpDetails);
         } catch (CommandException ex) {
-            JH.addMessage(FacesMessage.SEVERITY_FATAL, "The role assignment could not be removed.");
+            String failedMsg = java.text.MessageFormat.format(propsBundle.getString("file.revokeRole.failedMessage"),ra.getRole().getName(),roleAssigneeService.getRoleAssignee(ra.getAssigneeIdentifier()).getDisplayInfo().getTitle());
+            JsfHelper.addErrorMessage(failedMsg);
             logger.log(Level.SEVERE, "Error removing role assignment: " + ex.getMessage(), ex);
         }
     }    
   
  
     /*
-     grant access dialog
+     grant access and refer dialogs
      */
     private List<RoleAssignee> selectedRoleAssignees;
     private List<DataFile> selectedFiles = new ArrayList<>();
     private AuthenticatedUser fileRequester;
-    
+            
     public List<RoleAssignee> getSelectedRoleAssignees() {
         return selectedRoleAssignees;
     }
@@ -295,7 +304,6 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
     public AuthenticatedUser getFileRequester() {
         return fileRequester;
     }
-
 
     public void initAssignDialog(ActionEvent ae) {
         fileRequester = null;
@@ -319,9 +327,12 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
         showUserGroupMessages();
     }     
     
-
     public List<RoleAssignee> completeRoleAssignee(String query) {
         return roleAssigneeService.filterRoleAssignees(query, dataset, selectedRoleAssignees); 
+    }
+    
+    public ArrayList getFileRequestDetailsAsList(DataFile file){
+        return guestbookResponseService.findLatestRequestAccessGuestbookResponsesAsList(file, fileRequester);
     }
     
     public void grantAccess(ActionEvent evt) {
@@ -362,21 +373,28 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
 
     private void grantAccessToRequests(AuthenticatedUser au, List<DataFile> files) {
         boolean actionPerformed = false;
+        java.util.ResourceBundle propsBundle = java.util.ResourceBundle.getBundle("Bundle");
+        
         // Find the built in file downloader role (currently by alias) 
         DataverseRole fileDownloaderRole = roleService.findBuiltinRoleByAlias(DataverseRole.FILE_DOWNLOADER);
         for (DataFile file : files) {
-            if (assignRole(au, file, fileDownloaderRole)) {                
+            if (assignRole(au, file, fileDownloaderRole)) {
                 file.getFileAccessRequesters().remove(au);
                 datafileService.save(file);
                 actionPerformed = true;
             }
         }
         if (actionPerformed) {
-            JsfHelper.addSuccessMessage("File Access request by " + au.getDisplayInfo().getTitle() + " was granted.");                        
+            String successMsg = java.text.MessageFormat.format(propsBundle.getString("file.requestAccess.grant.successMessage"),au.getDisplayInfo().getTitle());
+            JsfHelper.addSuccessMessage(successMsg);                        
             userNotificationService.sendNotification(au, new Timestamp(new Date().getTime()), UserNotification.Type.GRANTFILEACCESS, dataset.getId()); 
-            initMaps();
         }
-
+        else {
+            String failedMsg = java.text.MessageFormat.format(propsBundle.getString("file.requestAccess.grant.failedMessage"),au.getDisplayInfo().getTitle());
+            JsfHelper.addErrorMessage(failedMsg);
+        }
+        initMaps(); 
+        this.showUserGroupMessages();
     }
     
     public void rejectAccessToRequests(AuthenticatedUser au) {
@@ -389,40 +407,49 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
 
     private void rejectAccessToRequests(AuthenticatedUser au, List<DataFile> files) {
         boolean actionPerformed = false;        
+        java.util.ResourceBundle propsBundle = java.util.ResourceBundle.getBundle("Bundle");
         for (DataFile file : files) {               
             file.getFileAccessRequesters().remove(au);
             datafileService.save(file);
             actionPerformed = true;
         }
 
-        
         if (actionPerformed) {
-            JsfHelper.addSuccessMessage("File Access request by " + au.getDisplayInfo().getTitle() + " was rejected.");            
-            userNotificationService.sendNotification(au, new Timestamp(new Date().getTime()), UserNotification.Type.REJECTFILEACCESS, dataset.getId());        
-            initMaps();
+            String successMsg = java.text.MessageFormat.format(propsBundle.getString("file.requestAccess.reject.successMessage"),au.getDisplayInfo().getTitle());
+            JsfHelper.addSuccessMessage(successMsg); 
+            userNotificationService.sendNotification(au, new Timestamp(new Date().getTime()), UserNotification.Type.REJECTFILEACCESS, dataset.getId());
+        } else {
+            String failedMsg = java.text.MessageFormat.format(propsBundle.getString("file.requestAccess.reject.failedMessage"),au.getDisplayInfo().getTitle());
+            JsfHelper.addErrorMessage(failedMsg); 
         }
+        
+        initMaps(); 
+        this.showUserGroupMessages();
     }    
 
     private boolean assignRole(RoleAssignee ra,  DataFile file, DataverseRole r) {
+        java.util.ResourceBundle propsBundle = java.util.ResourceBundle.getBundle("Bundle");
+        
         try {
             String privateUrlToken = null;
             commandEngine.submit(new AssignRoleCommand(ra, r, file, dvRequestService.getDataverseRequest(), privateUrlToken));
-            JsfHelper.addSuccessMessage(r.getName() + " role assigned to " + ra.getDisplayInfo().getTitle() + " for " + file.getDisplayName() + ".");
+            String successMsg = java.text.MessageFormat.format(propsBundle.getString("file.assignRole.successMessage"),r.getName(),ra.getDisplayInfo().getTitle(),file.getDisplayName());
+            JsfHelper.addSuccessMessage(successMsg);
         } catch (PermissionException ex) {
-            JH.addMessage(FacesMessage.SEVERITY_ERROR, "The role was not able to be assigned.", "Permissions " + ex.getRequiredPermissions().toString() + " missing.");
+            String excpSummary = propsBundle.getString("file.assignRole.permissionsException.summary");
+            String excpDetails = java.text.MessageFormat.format(propsBundle.getString("file.assignRole.permissionsException.details"),ex.getRequiredPermissions().toString());
+            JH.addMessage(FacesMessage.SEVERITY_ERROR,excpSummary,excpDetails);
             return false;
         } catch (CommandException ex) {
-            //JH.addMessage(FacesMessage.SEVERITY_FATAL, "The role was not able to be assigned.");
-            String message = r.getName() + " role could NOT be assigned to " + ra.getDisplayInfo().getTitle() + " for " + file.getDisplayName() + ".";
-            JsfHelper.addErrorMessage(message);
+            String failedMsg = java.text.MessageFormat.format(propsBundle.getString("file.assignRole.failedMessage"),r.getName(),ra.getDisplayInfo().getTitle(),file.getDisplayName());
+            JsfHelper.addErrorMessage(failedMsg);
             logger.log(Level.SEVERE, "Error assiging role: " + ex.getMessage(), ex);
             return false;
         }
         
         return true;
     }
-
-
+    
     boolean renderUserGroupMessages = false;
     boolean renderFileMessages = false;
        
@@ -452,9 +479,72 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
         this.renderFileMessages = renderFileMessages;
     }
 
-
-
-
+    /* functions to assist in creating mailto tags in the Access Requests panel*/
+    
+    public String getMailto(String email_address, String subject){
+        return this.getMailto(email_address, subject,""); //need to ensure subject is properly escaped
+    }
+       
+   
+    public String getMailto(String email_address, String subject, String body){
+ 
+        String result = "";
+        
+        try{
+         
+        result = String.format("mailto:%s?subject=%s&body=%s",
+            email_address,    
+            java.net.URLEncoder.encode(subject, "UTF-8").replace("+", "%20"), //replace the "+" chacacter with the space % encoding
+            java.net.URLEncoder.encode(body, "UTF-8").replace("+", "%20"));  
+        }catch(Exception exc){
+            logger.info("Exception caught trying to format mailto uri: " + exc.getMessage());
+        }
+        
+        return result;
+    }
+    
+    
+    public String getMailtoFromList(String email_address, DataFile dFile, ArrayList<ArrayList> rspDetailsList){
+        String result = "";
+        java.util.ResourceBundle propsBundle = java.util.ResourceBundle.getBundle("Bundle");
+        
+        String subject = propsBundle.getString("dataverse.permissionsFiles.files.mailto.subject");
+            
+        if( rspDetailsList != null && !rspDetailsList.isEmpty()){
+            //format the guestbookResponse as a string for the email body
+            String bodyDetails = propsBundle.getString("dataverse.permissionsFiles.files.mailto.datafile") + dFile.getDisplayName() + "\n\n";
+            bodyDetails = bodyDetails + propsBundle.getString("dataverse.permissionsFiles.files.mailto.dataset") + dFile.getOwner().getDisplayName() + "   (" + systemConfig.getDataverseSiteUrl() + "/dataset.xhtml?persistentId=" + dFile.getOwner().getGlobalId() + ")\n\n\n\n";
+            
+            bodyDetails = bodyDetails + java.util.ResourceBundle.getBundle("Bundle").getString("dataverse.permissionsFiles.files.mailto.bodyStart");
+           
+            for(ArrayList rsp: rspDetailsList){
+                bodyDetails = bodyDetails + rsp.get(0) + ":\n " + rsp.get(1)+ "\n\n";
+            }
+            
+            result = this.getMailto(email_address, subject, bodyDetails);
+         
+        }
+        else{
+            result = this.getMailto(email_address, subject,"");
+        }
+        
+        return result;
+        
+    }
+    
+    public boolean isEmailQR(ArrayList qrValue){
+        boolean isEmail = false;
+        
+        if(qrValue != null && !qrValue.isEmpty()){
+            if( ((String)qrValue.get(0)).toLowerCase().contains("email"))
+            {
+                isEmail = true;
+            }
+        }
+        
+        return isEmail;
+    }
+    
     // inner class used fordisplay of role assignments
     public static class RoleAssignmentRow {
 
@@ -480,5 +570,6 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
             return ra.getId();
         }
     
-    }   
+    }
+    
 }

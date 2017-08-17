@@ -448,8 +448,10 @@ public class DataverseUserPage implements java.io.Serializable {
                 case CREATEDV:
                     userNotification.setTheObject(dataverseService.find(userNotification.getObjectId()));
                     break;
-
+                case REQUESTEDFILEACCESS:
                 case REQUESTFILEACCESS:
+                case REFERFILEACCESS:
+                case REFERREDFILEACCESS:
                     DataFile file = fileService.find(userNotification.getObjectId());
                     userNotification.setTheObject(file.getOwner());
                     break;

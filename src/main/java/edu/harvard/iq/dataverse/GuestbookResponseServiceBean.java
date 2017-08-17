@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -275,7 +276,19 @@ public class GuestbookResponseServiceBean {
     public List<GuestbookResponse> findAllByDataverse(Long dataverseId) {
         return em.createQuery("select object(o) from GuestbookResponse  o, Dataset d where o.dataset.id = d.id and d.owner.id = " + dataverseId + " order by o.responseTime desc", GuestbookResponse.class).getResultList();
     }
-
+    
+    public List<GuestbookResponse> findByDatafileDownloadTypeAndUser(DataFile df, String downloadType, AuthenticatedUser au){
+        return em.createQuery("select object(o) from GuestbookResponse o where o.dataFile.id = " + df.getId() + " and o.authenticatedUser.id=" + au.getId() + " and o.downloadtype like '" + downloadType +  "%' order by o.responseTime desc", GuestbookResponse.class).getResultList();
+    }
+     
+    public List<GuestbookResponse> findByDatasetDownloadType(Dataset ds, String downloadType){
+        return em.createQuery("select object(o) from GuestbookResponse o where o.dataset.id=" + ds.getId() + " and o.downloadtype like '" + downloadType +  "%' order by o.downloadtype, o.authenticatedUser.id, o.dataFile.id", GuestbookResponse.class).getResultList();
+    }
+    
+    public List<GuestbookResponse> findByDatasetDownloadTypeAndUser(Dataset ds, String downloadType, AuthenticatedUser au){
+        return em.createQuery("select object(o) from GuestbookResponse o where o.dataset.id=" + ds.getId() + " and o.authenticatedUser.id=" + au.getId() + " and o.downloadtype like '" + downloadType +  "%' order by o.downloadtype, o.authenticatedUser.id, o.dataFile.id", GuestbookResponse.class).getResultList();
+    }
+    
     public List<GuestbookResponse> findAllWithin30Days() {
         return findAllWithin30Days(null);
     }
@@ -348,6 +361,90 @@ public class GuestbookResponseServiceBean {
         return convertIntegerToLong(query.getResultList(), 1);
     }
 
+    /**
+     * Returns a list of Objects (need to be cast to CustomQuestionResponse objects) associated with a GuestbookResponse.
+     * Similar to findCustomResponsePerGuestbookResponse but also requests the questionstring.
+     * 
+     * @param gbrId The Long id of the GuestbookResponse to find the CustomQuestionResponses for.
+     * @return      List of Objects (CustomQuestionResponse) associated with a GuestbookResponse
+     */
+    public List<Object[]> findCustomQuestionResponsePerGuestbookResponse(Long gbrId) {
+
+        String gbrCustomQuestionQueryString = "select cq.id, cq.questionstring, response"
+                + " from guestbookresponse gbr, customquestion cq, customquestionresponse cqr"
+                + " where gbr.guestbook_id = cq.guestbook_id"
+                + " and gbr.id = cqr.guestbookresponse_id"
+                + " and cq.id = cqr.customquestion_id"
+                + " and cqr.guestbookresponse_id =  " + gbrId + " order by cq.displayorder;";
+        List<Object[]> queryResultList = em.createNativeQuery(gbrCustomQuestionQueryString).getResultList();
+
+        return queryResultList;
+    }
+    
+    /**
+     * Returns an ArrayList of ArrayLists of the most recent GuestbookResponse Question/Response details for a DataFile and AuthenticatedUser to make it easy to iterate over.
+     * Each ArrayList in the returned ArrayList is a (QuestionString, ResponseString) pair
+     * Return simple ((QuestionString, ResponseString), (QuestionString, ResponseString), ...) pairs to eliminate need for complicated Objects
+     * 
+     * @param DataFile df
+     * @param AuthenticatedUser au
+     * @return ArrayList - ArrayList of ArrayLists
+     * 
+     */
+    
+    public ArrayList findLatestRequestAccessGuestbookResponsesAsList(DataFile df, AuthenticatedUser au){
+        ArrayList qrs = new ArrayList();
+        
+        if(df==null || au == null){ //prevent null pointer exception: return empty ArrayList
+            return qrs;
+        }
+            
+        String queryString = "select gbr.id, gbr.name, gbr.email, gbr.institution, gbr.position from guestbookresponse as gbr inner join fileaccessrequests as far"
+                + " on gbr.datafile_id = far.datafile_id and gbr.authenticateduser_id=far.authenticated_user_id"
+                + " where gbr.authenticateduser_id= " + au.getId().toString()
+                + " and gbr.datafile_id= + " + df.getId().toString()
+                + " and gbr.responsetime = (select max(responsetime) from guestbookresponse"
+                + " where datafile_id=" + df.getId().toString()
+                + " and authenticateduser_id=" + au.getId().toString()
+                + " and downloadtype like 'Request Access%');";
+        
+        List<Object[]> queryResults = em.createNativeQuery(queryString).getResultList();
+        
+        for (Object[] result : queryResults) {
+            Long gbrId = ((Integer)result[0]).longValue();
+            ArrayList qAndr = new ArrayList();
+            qAndr.add(0,"Name");
+            qAndr.add(1,(String)result[1]);
+            qrs.add(qAndr);
+            
+            qAndr = new ArrayList();
+            qAndr.add(0,"Email");
+            qAndr.add(1,(String)result[2]);
+            qrs.add(qAndr);
+            
+            qAndr = new ArrayList();
+            qAndr.add(0,"Institution");
+            qAndr.add(1,(String)result[3]);
+            qrs.add(qAndr);
+            
+            qAndr = new ArrayList();
+            qAndr.add(0,"Position");
+            qAndr.add(1,(String)result[4]);
+            qrs.add(qAndr);
+            
+            List<Object[]> custQuestResults = this.findCustomQuestionResponsePerGuestbookResponse(gbrId);
+            
+            for (Object[] cqresult : custQuestResults){
+                qAndr = new ArrayList();
+                qAndr.add(0,(String)cqresult[1]);
+                qAndr.add(1,(String)cqresult[2]);
+                qrs.add(qAndr);
+            }
+            
+        }
+        return qrs;
+    }
+       
     private Guestbook findDefaultGuestbook() {
         Guestbook guestbook = new Guestbook();
         String queryStr = "SELECT object(o) FROM Guestbook as o WHERE o.dataverse.id = null";
@@ -452,7 +549,7 @@ public class GuestbookResponseServiceBean {
     public void initGuestbookResponse(FileMetadata fileMetadata, String downloadType, DataverseSession session){
          initGuestbookResponse(fileMetadata, downloadType, null, session);
     }
-    
+            
     public GuestbookResponse initGuestbookResponse(FileMetadata fileMetadata, String downloadFormat, String selectedFileIds, DataverseSession session) {
         Dataset dataset;              
         DatasetVersion workingVersion = null;
@@ -563,6 +660,10 @@ public class GuestbookResponseServiceBean {
     }
     
     public GuestbookResponse modifyDatafile(GuestbookResponse in, FileMetadata fm) {
+        //single data file selected so clear any that may have been multiselected
+        if( in != null ){
+            in.setSelectedFileIds(null); //do not set it to ""; default value needs to be null
+        }
         if (in != null && fm.getDataFile() != null) {
             in.setDataFile(fm.getDataFile());
         }
@@ -573,6 +674,8 @@ public class GuestbookResponseServiceBean {
     }
     
     public GuestbookResponse modifySelectedFileIds(GuestbookResponse in, String fileIds) {
+        in.setDataFile(null); //not sure if this should be executed
+        
         if (in != null && fileIds != null) {
             in.setSelectedFileIds(fileIds);
         }
@@ -580,6 +683,10 @@ public class GuestbookResponseServiceBean {
     }
 
     public GuestbookResponse modifyDatafileAndFormat(GuestbookResponse in, FileMetadata fm, String format) {
+        if( in != null ){
+            in.setSelectedFileIds(null); //clear any that may have been multiple selected - do not set it to "" - default needs to be null
+        }
+        
         if (in != null && fm.getDataFile() != null) {
             in.setFileFormat(format);
             in.setDataFile(fm.getDataFile());
@@ -663,20 +770,27 @@ public class GuestbookResponseServiceBean {
     
     
     public Long getCountGuestbookResponsesByDataFileId(Long dataFileId) {
-        // datafile id is null, will return 0
-        Query query = em.createNativeQuery("select count(o.id) from GuestbookResponse  o  where o.datafile_id  = " + dataFileId);
+        // datafile id is null, will return 0 - why hit the database if we don't have to?
+        if(dataFileId == null){ return new Long(0);}
+        //Query query = em.createNativeQuery("select count(o.id) from GuestbookResponse  o  where o.datafile_id  = " + dataFileId);
+        String queryString = "select count(o.id) from GuestbookResponse  o  where o.datafile_id  = " + dataFileId + " and o.downloadtype not like 'Request Access%'";
+        Query query = em.createNativeQuery(queryString);
         return (Long) query.getSingleResult();
     }
     
     public Long getCountGuestbookResponsesByDatasetId(Long datasetId) {
-        // dataset id is null, will return 0        
-        Query query = em.createNativeQuery("select count(o.id) from GuestbookResponse  o  where o.dataset_id  = " + datasetId);
+        // dataset id is null, will return 0 - why hit the database if we don't have to?    
+        if(datasetId == null){ return new Long(0);}
+        //Query query = em.createNativeQuery("select count(o.id) from GuestbookResponse  o  where o.dataset_id  = " + datasetId);
+        String queryString = "select count(o.id) from GuestbookResponse  o  where o.dataset_id  = " + datasetId + " and o.downloadtype not like 'Request Access%'";
+        Query query = em.createNativeQuery(queryString);
         return (Long) query.getSingleResult();
     }    
 
     public Long getCountOfAllGuestbookResponses() {
-        // dataset id is null, will return 0        
-        Query query = em.createNativeQuery("select count(o.id) from GuestbookResponse  o;");
+        //Query query = em.createNativeQuery("select count(o.id) from GuestbookResponse  o;");
+        String queryString = "select count(o.id) from GuestbookResponse  o where o.downloadtype not like 'Request Access%';";
+        Query query = em.createNativeQuery(queryString);
         return (Long) query.getSingleResult();
     }
     

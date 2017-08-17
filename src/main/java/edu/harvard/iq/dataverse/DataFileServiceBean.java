@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -56,7 +57,9 @@ public class DataFileServiceBean implements java.io.Serializable {
     @EJB
     PermissionServiceBean permissionService;
     @EJB
-    UserServiceBean userService; 
+    UserServiceBean userService;
+    @EJB
+    UserNotificationServiceBean userNotificationService;
 
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     private EntityManager em;
@@ -707,7 +710,7 @@ public class DataFileServiceBean implements java.io.Serializable {
         owner.setFiles(dataFiles);
     }
     
-     private List<AuthenticatedUser> retrieveFileAccessRequesters(DataFile fileIn){
+    private List<AuthenticatedUser> retrieveFileAccessRequesters(DataFile fileIn){
         List<AuthenticatedUser> retList = new ArrayList<>();
         
         List<Object> requesters  = em.createNativeQuery("select authenticated_user_id from fileaccessrequests where datafile_id = "+fileIn.getId()).getResultList();

@@ -241,19 +241,52 @@
                 </li>
             </ul>
         </div>
-        
+        <!--fileMetadata parameter is passed to the file-download-button-fragment.xhtml via dataset.xhtml -> filesFragment.xhtml --> 
+        <!--action is call modifyDatafile to add the fileMetadata fileId to the guestbookResponse object -->
         <p:commandLink type="button" styleClass="btn btn-default" rendered="#{fileDownloadHelper.session.user.authenticated 
                                                                               and !fileMetadata.datasetVersion.deaccessioned
-                                                                              and fileMetadata.dataFile.owner.fileAccessRequest and !(fileDownloadHelper.canDownloadFile(fileMetadata))}"
-                       actionListener="#{fileDownloadHelper.requestAccess(fileMetadata.dataFile)}"
-                       update="@this"
+                                                                              and fileMetadata.dataFile.owner.fileAccessRequest 
+                                                                              and !(fileDownloadHelper.canDownloadFile(fileMetadata))
+                                                                              and downloadPopupRequired
+                                                                              and workingVersion.dataset.guestbook != null
+                                                                              and workingVersion.dataset.guestbook.enabled
+                                                                              }"
+                       action="#{guestbookResponseService.modifyDatafile(guestbookResponse, fileMetadata)}"
+                       onclick="if(PrimeFaces.widgets['filesTable']){ PF('filesTable').unselectAllRows(); }"
+                       update="@widgetVar(requestAccessPopup)"
+                       oncomplete="PF('requestAccessPopup').show()"
                        disabled="#{fileMetadata.dataFile.fileAccessRequesters.contains(dataverseSession.user)}">
             <!-- Request Access -->
             <!-- 4.2.1 - TODO: retest this on a dataset with fileRequest enabled and with some files restricted to the user -->
             <!-- 4.2.1 - TODO: make sure dataFile.fileAccessRequesters gets populated -->
             <span class="glyphicon glyphicon-bullhorn"/> #{fileMetadata.dataFile.fileAccessRequesters.contains(dataverseSession.user) ? bundle['file.accessRequested'] : bundle['file.requestAccess']}
         </p:commandLink>
-        
+        <!-- this is for restricted files with no guestbook and no terms of access. Just want straight up request with no guestbook entries -->
+        <p:commandLink type="button" styleClass="btn btn-default" rendered="#{fileDownloadHelper.session.user.authenticated 
+                                                                              and !fileMetadata.datasetVersion.deaccessioned
+                                                                              and fileMetadata.dataFile.owner.fileAccessRequest 
+                                                                              and !(fileDownloadHelper.canDownloadFile(fileMetadata))
+                                                                              and downloadPopupRequired
+                                                                              and (workingVersion.dataset.guestbook == null
+                                                                                  || !workingVersion.dataset.guestbook.enabled)}"
+                   actionListener="#{fileDownloadHelper.requestAccess(fileMetadata.dataFile)}"
+                   onclick="if(PrimeFaces.widgets['filesTable']){ PF('filesTable').unselectAllRows(); }"
+                   update="@this"
+                   disabled="#{fileMetadata.dataFile.fileAccessRequesters.contains(dataverseSession.user)}">
+            <span class="glyphicon glyphicon-bullhorn"/> #{fileMetadata.dataFile.fileAccessRequesters.contains(dataverseSession.user) ?  bundle['file.accessRequested'] : bundle['file.requestAccess']}
+        </p:commandLink>
+        <!-- this is for restricted files with no guestbook, no access terms and no use terms: -->
+        <p:commandLink type="button" styleClass="btn btn-default" rendered="#{fileDownloadHelper.session.user.authenticated 
+                                                                              and !fileMetadata.datasetVersion.deaccessioned
+                                                                              and fileMetadata.dataFile.owner.fileAccessRequest 
+                                                                              and !(fileDownloadHelper.canDownloadFile(fileMetadata))
+                                                                              and !downloadPopupRequired}"
+                   actionListener="#{fileDownloadHelper.requestAccess(fileMetadata.dataFile)}"
+                   onclick="if(PrimeFaces.widgets['filesTable']){ PF('filesTable').unselectAllRows(); }"
+                   update="@this"
+                   disabled="#{fileMetadata.dataFile.fileAccessRequesters.contains(dataverseSession.user)}">
+            <span class="glyphicon glyphicon-bullhorn"/> #{fileMetadata.dataFile.fileAccessRequesters.contains(dataverseSession.user) ? bundle['file.accessRequested'] : bundle['file.requestAccess']  }
+        </p:commandLink> 
         <p:commandLink type="button" styleClass="btn btn-default" rendered="#{!fileDownloadHelper.session.user.authenticated 
                                                                               and !fileMetadata.datasetVersion.deaccessioned
                                                                               and fileMetadata.dataFile.owner.fileAccessRequest and !(fileDownloadHelper.canDownloadFile(fileMetadata))}"

@@ -1724,8 +1724,8 @@ public class DatasetPage implements java.io.Serializable {
             } else {
                 getSelectedNonDownloadableFiles().add(fmd);
             }
-        }
-        
+        }           
+        //if there is at least one downloadable and no non-downloadable files selected, then 
         if(!getSelectedDownloadableFiles().isEmpty() && getSelectedNonDownloadableFiles().isEmpty()){
             if (guestbookRequired){
                 modifyGuestbookMultipleResponse();
@@ -1796,7 +1796,7 @@ public class DatasetPage implements java.io.Serializable {
     }
     
         // helper Method
-    public String getSelectedDownloadableFilesIdsString() {        
+    public String getSelectedDownloadableFilesIdsString() {
         String downloadIdString = "";
         for (FileMetadata fmd : this.selectedDownloadableFiles){
             if (!StringUtil.isEmpty(downloadIdString)) {
@@ -1829,6 +1829,18 @@ public class DatasetPage implements java.io.Serializable {
         }
         return downloadIdString;
       
+    }
+    
+    
+    public String getSelectedRestrictedFilesIdsString() {
+        String restrictedIdString = "";
+        for (FileMetadata fmd : this.selectedRestrictedFiles){
+            if (!StringUtil.isEmpty(restrictedIdString)) {
+                restrictedIdString += ",";
+            }
+            restrictedIdString += fmd.getDataFile().getId();
+        }
+        return restrictedIdString;     
     }
     
     public void updateFileCounts(){
@@ -2442,6 +2454,28 @@ public class DatasetPage implements java.io.Serializable {
     }
     
     
+    public void modifyRestrictedGuestbookMultipleResponse(String downloadType){
+        if (this.selectedFiles.isEmpty()) {
+            RequestContext requestContext = RequestContext.getCurrentInstance();
+            requestContext.execute("PF('selectFilesForRequestAccess').show()");
+            return;
+        }
+       
+        this.filterSelectedRestrictedFiles();
+        
+        if(!(this.selectedRestrictedFiles.isEmpty()) ){
+             if(workingVersion.getDataset().getGuestbook() != null && workingVersion.getDataset().getGuestbook().isEnabled()){
+                 this.guestbookResponse = this.guestbookResponseService.modifySelectedFileIds(guestbookResponse, getSelectedRestrictedFilesIdsString());
+                 this.guestbookResponse.setDownloadtype(downloadType);
+                 this.guestbookResponse.setFileFormat(downloadType);
+                RequestContext requestContext = RequestContext.getCurrentInstance();
+                requestContext.execute("PF('requestAccessPopup').show();handleResizeDialog('requestAccessPopup');");
+             }
+        }
+       
+        //perhaps popup a message: "The selected files are already accessible or are awaiting access being granted."
+    }
+     
     public void modifyGuestbookMultipleResponse(){
         if (this.selectedFiles.isEmpty()) {
             RequestContext requestContext = RequestContext.getCurrentInstance();
@@ -2456,6 +2490,36 @@ public class DatasetPage implements java.io.Serializable {
         requestContext.execute("PF('downloadPopup').show();handleResizeDialog('downloadPopup');");
     }
     
+    /**
+     * filterSelectedRestrictedFiles
+     * 
+     * picks through the selected files
+     * selects the selected files that:
+     *      - the user has not already requested access to
+     *      - does not already have access granted to them
+     * sets the selectedRestrictedFiles field to be the files that meet those 2 criteria 
+     */
+    public void filterSelectedRestrictedFiles(){
+        updateFileCounts(); //call this to establish selected *restricted* files, if any
+        
+        List<FileMetadata> selectedRestrictedFilesForAccessRequest = new ArrayList();
+        for (FileMetadata fmd : selectedRestrictedFiles) {
+               
+                DataFile df = fmd.getDataFile(); //DataFile already associated with fmd when fmd object is created.
+               
+                if(df != null && df.isRestricted())
+                {
+                    if(!(df.getFileAccessRequesters().contains((AuthenticatedUser) session.getUser()) //check to see if user already requested access
+                       || fileDownloadHelper.canDownloadFile(fmd))) //check to see if they have already been granted access permission
+                    {
+                        selectedRestrictedFilesForAccessRequest.add(fmd);
+                    }
+                }
+        }
+        
+        this.setSelectedRestrictedFiles(selectedRestrictedFilesForAccessRequest);
+             
+    }
     public void initGuestbookMultipleResponse(String selectedFileIds){
          initGuestbookResponse(null, "download", selectedFileIds);
     }
@@ -3216,7 +3280,7 @@ public class DatasetPage implements java.io.Serializable {
         }
         return false;
     }
-
+    
     public boolean isFileAccessRequestMultiButtonEnabled(){
         if (!isSessionUserAuthenticated() || !dataset.isFileAccessRequest()){
             return false;
@@ -3231,6 +3295,34 @@ public class DatasetPage implements java.io.Serializable {
         }
         return false;
     } 
+   
+    /**
+     * 
+     * @param checkType
+     * @return boolean
+     * - returns true if
+     */
+    public boolean isFileAccessRequestMultiButtonLocked(String checkType){
+        boolean isLocked = true;
+        
+        if (!isSessionUserAuthenticated() || !dataset.isFileAccessRequest()){
+            return isLocked;
+        }
+        
+        int countRestrictedNotRequested = 0;
+      
+        if(checkType.equals("Request Access")){
+            for (DataFile df : dataset.getFiles()){
+                if(df.isRestricted() && !df.getFileAccessRequesters().contains((AuthenticatedUser)session.getUser())){
+                    countRestrictedNotRequested++;
+                }
+            }
+            
+            isLocked = countRestrictedNotRequested == 0;
+        }
+     
+        return isLocked;
+    }
     
     private Boolean downloadButtonAllEnabled = null;
 
@@ -3299,8 +3391,13 @@ public class DatasetPage implements java.io.Serializable {
     public boolean isDownloadPopupRequired() {
         return FileUtil.isDownloadPopupRequired(workingVersion);
     }
-    
-       public String requestAccessMultipleFiles(String fileIdString) {
+   
+    public String requestAccessMultipleRestrictedFiles(){
+        this.filterSelectedRestrictedFiles();
+        return requestAccessMultipleFiles(this.getSelectedRestrictedFilesIdsString());
+    }
+          
+    public String requestAccessMultipleFiles(String fileIdString) {
             if (fileIdString.isEmpty()) {
             RequestContext requestContext = RequestContext.getCurrentInstance();
             requestContext.execute("PF('selectFilesForRequestAccess').show()");
@@ -3329,8 +3426,6 @@ public class DatasetPage implements java.io.Serializable {
         }
         return returnToDatasetOnly();
     }
-   
-
 
     public boolean isSortButtonEnabled() {
         /**

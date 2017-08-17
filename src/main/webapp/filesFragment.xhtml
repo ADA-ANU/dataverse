@@ -116,12 +116,27 @@
                                 <span class="glyphicon glyphicon-download-alt"/> #{bundle.download}
                             </p:commandLink>
                         </div>
-                        <p:commandLink rendered="#{DatasetPage.fileAccessRequestMultiButtonRequired}"
-                                       type="button" styleClass="btn btn-default"                                   
-                                       update="@form" action="#{DatasetPage.requestAccessMultipleFiles(DatasetPage.selectedFilesIdsString)}"
-                                       disabled="#{DatasetPage.locked}">
+                        <p:commandLink rendered="#{DatasetPage.fileAccessRequestMultiButtonRequired
+                                        and DatasetPage.workingVersion.dataset.guestbook != null
+                                        and DatasetPage.workingVersion.dataset.guestbook.enabled}"
+                                        type="button" styleClass="btn btn-default"                                   
+                                        actionListener="#{DatasetPage.modifyRestrictedGuestbookMultipleResponse('Request Access')}"
+                                        disabled="#{DatasetPage.locked or DatasetPage.isFileAccessRequestMultiButtonLocked('Request Access')}">
                             <span class="glyphicon glyphicon-bullhorn"/> #{bundle['file.requestAccess']}
                         </p:commandLink>
+                        
+                        <!-- request multiple but no guestbook exists for dataset so just call Request Access -->
+                        <p:commandLink rendered="#{DatasetPage.fileAccessRequestMultiButtonRequired
+                                        and DatasetPage.workingVersion.dataset.guestbook == null
+                                        and !DatasetPage.workingVersion.dataset.guestbook.enabled}"
+                                        type="button" styleClass="btn btn-default"                                   
+                                        action="#{DatasetPage.requestAccessMultipleRestrictedFiles()}"
+                                        update="@form"
+                                        disabled="#{DatasetPage.locked or DatasetPage.isFileAccessRequestMultiButtonLocked('Request Access')}">
+                            <span class="glyphicon glyphicon-bullhorn"/> #{bundle['file.requestAccess']}
+                        </p:commandLink>
+                        
+                        
                         <p:commandLink rendered="#{DatasetPage.fileAccessRequestMultiSignUpButtonRequired}"
                                        type="button" styleClass="btn btn-default"
                                        onclick="PF('accessSignUpLogIn_popup').show()"
@@ -313,6 +328,7 @@
 
             <div class="button-block">
                         <ui:include src="file-download-button-fragment.xhtml">
+                            <ui:param name="workingVersion" value="#{DatasetPage.workingVersion}"/>
                             <ui:param name="fileMetadata" value="#{fileMetadata}"/>
                             <ui:param name="canUpdateDataset" value="#{DatasetPage.canUpdateDataset()}"/>
                             <ui:param name="downloadPopupRequired" value="#{DatasetPage.downloadPopupRequired}"/>

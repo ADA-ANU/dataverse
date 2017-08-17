@@ -157,6 +157,14 @@
                                                         </o:param>
                                                     </h:outputFormat>
                                                 </ui:fragment>
+                                                <ui:fragment rendered="#{item.type == 'REQUESTEDFILEACCESS'}">
+                                                    <i class="icon-dataset text-icon-inline text-muted"></i>
+                                                    <h:outputFormat value="#{bundle['notification.requestedFileAccess']}" escape="false">
+                                                        <o:param>
+                                                            <a href="/dataset.xhtml?persistentId=#{item.theObject.getGlobalId()}" title="#{item.theObject.displayName}">#{item.theObject.displayName}</a>
+                                                        </o:param>
+                                                    </h:outputFormat>
+                                                </ui:fragment>
                                                 <ui:fragment rendered="#{item.type == 'GRANTFILEACCESS'}">
                                                     <i class="icon-dataset text-icon-inline text-muted"></i>
                                                     <h:outputFormat value="#{bundle['notification.grantFileAccess']}" escape="false">
@@ -170,6 +178,22 @@
                                                     <h:outputFormat value="#{bundle['notification.rejectFileAccess']}" escape="false">
                                                         <o:param>
                                                             <a href="/dataset.xhtml?persistentId=#{item.theObject.getGlobalId()}" title="#{item.theObject.displayName}">#{item.theObject.displayName}</a>
+                                                        </o:param>
+                                                    </h:outputFormat>
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{item.type == 'REFERFILEACCESS'}">
+                                                    <i class="icon-dataset text-icon-inline text-muted"></i>
+                                                    <h:outputFormat value="#{bundle['notification.referFileAccess']}" escape="false">
+                                                        <o:param>
+                                                            <a href="/permissions-manage-files.xhtml?id=#{item.theObject.id}" title="#{item.theObject.displayName}">#{item.theObject.displayName}</a>
+                                                        </o:param>
+                                                    </h:outputFormat>
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{item.type == 'REFERREDFILEACCESS'}">
+                                                    <i class="icon-dataset text-icon-inline text-muted"></i>
+                                                    <h:outputFormat value="#{bundle['notification.referredFileAccess']}" escape="false">
+                                                        <o:param>
+                                                            <a href="/permissions-manage-files.xhtml?id=#{item.theObject.id}" title="#{item.theObject.displayName}">#{item.theObject.displayName}</a>
                                                         </o:param>
                                                     </h:outputFormat>
                                                 </ui:fragment>

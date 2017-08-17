@@ -77,9 +77,9 @@ public class FileDownloadServiceBean implements java.io.Serializable {
             callDownloadServlet(guestbookResponse.getFileFormat(), guestbookResponse.getDataFile().getId(), guestbookResponse.isWriteResponse());
         }
         
-        if (guestbookResponse != null && guestbookResponse.getSelectedFileIds() != null     ){
+        if (guestbookResponse != null && guestbookResponse.getSelectedFileIds() != null){
             List<String> list = new ArrayList<>(Arrays.asList(guestbookResponse.getSelectedFileIds().split(",")));
-
+            
             for (String idAsString : list) {
                 DataFile df = datafileService.findCheapAndEasy(new Long(idAsString)) ;
                 if (df != null) {
@@ -107,7 +107,6 @@ public class FileDownloadServiceBean implements java.io.Serializable {
     }
 
     public void callDownloadServlet(String multiFileString, Boolean gbRecordsWritten){
-
         String fileDownloadUrl = "/api/access/datafiles/" + multiFileString;
         if (gbRecordsWritten){
             fileDownloadUrl += "?gbrecs=true";
@@ -356,12 +355,12 @@ public class FileDownloadServiceBean implements java.io.Serializable {
     }    
     
     public void sendRequestFileAccessNotification(Dataset dataset, Long fileId) {
+        Timestamp ts = new Timestamp(new Date().getTime());
         permissionService.getUsersWithPermissionOn(Permission.ManageDatasetPermissions, dataset).stream().forEach((au) -> {
-            userNotificationService.sendNotification(au, new Timestamp(new Date().getTime()), UserNotification.Type.REQUESTFILEACCESS, fileId);
+            userNotificationService.sendNotification(au, ts, UserNotification.Type.REQUESTFILEACCESS, fileId);
         });
 
+        userNotificationService.sendNotification((AuthenticatedUser) session.getUser(), ts, UserNotification.Type.REQUESTEDFILEACCESS, fileId);
     }    
-
-
     
 }
