@@ -55,7 +55,7 @@ public class Dataset extends DvObjectContainer {
     private String protocol;
     private String authority;
     private String doiSeparator;
-    private String guestbookWorkflowPoint;
+    private String guestbookWorkflowPoint="request"; //default database value
     
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date globalIdCreateTime;
