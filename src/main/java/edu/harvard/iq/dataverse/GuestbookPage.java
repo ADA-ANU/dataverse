@@ -215,8 +215,11 @@ public class GuestbookPage implements java.io.Serializable {
     }
     
     public void toggleQuestionType(CustomQuestion questionIn) {
+        //if (questionIn.getCustomQuestionValues() != null && questionIn.getCustomQuestionValues().isEmpty() 
+        //        && questionIn.getQuestionType() !=null && questionIn.getQuestionType().equals("options")){
         if (questionIn.getCustomQuestionValues() != null && questionIn.getCustomQuestionValues().isEmpty() 
-                && questionIn.getQuestionType() !=null && questionIn.getQuestionType().equals("options")){
+                && questionIn.getQuestionType() !=null 
+                && (questionIn.getQuestionType().equals("multi-select") ||  questionIn.getQuestionType().equals("single-select")) ){
             questionIn.setCustomQuestionValues(new ArrayList<CustomQuestionValue>());
             CustomQuestionValue addCQV = new CustomQuestionValue();
             addCQV.setCustomQuestion(questionIn);
@@ -234,7 +237,7 @@ public class GuestbookPage implements java.io.Serializable {
         boolean create = false;
         if (!(guestbook.getCustomQuestions() == null)) {
             for (CustomQuestion cq : guestbook.getCustomQuestions()) {
-                if (cq.getQuestionType().equals("text")) {
+                if (cq.getQuestionType().equals("text") || cq.getQuestionType().equals("short-text") || cq.getQuestionType().equals("long-text") ) {
                     cq.setCustomQuestionValues(null);
                 }
             }
@@ -248,7 +251,7 @@ public class GuestbookPage implements java.io.Serializable {
             }
 
             for (CustomQuestion cq : guestbook.getCustomQuestions()) {
-                if (cq != null && cq.getQuestionType().equals("options")) {
+                if (cq != null && (cq.getQuestionType().equals("multi-select") || cq.getQuestionType().equals("single-select") )) {
                     Iterator<CustomQuestionValue> cqvIt = cq.getCustomQuestionValues().iterator();
                     while (cqvIt.hasNext()) {
                         CustomQuestionValue cqv = cqvIt.next();
@@ -260,7 +263,7 @@ public class GuestbookPage implements java.io.Serializable {
             }
             
             for (CustomQuestion cq : guestbook.getCustomQuestions()) {
-                if (cq != null && cq.getQuestionType().equals("options")) {
+                if (cq != null && (cq.getQuestionType().equals("multi-select") || cq.getQuestionType().equals("single-select") )) {
                     if (cq.getCustomQuestionValues() == null || cq.getCustomQuestionValues().isEmpty()){
                         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Guestbook Save Failed", " - An Option question requires multiple options. Please complete before saving." ));
                         return null;
