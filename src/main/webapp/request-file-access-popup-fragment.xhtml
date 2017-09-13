@@ -87,12 +87,38 @@
                                     <h:outputText value="#{customQuestionResponse.customQuestion.questionString}"/>
                                     <span class="glyphicon glyphicon-asterisk text-danger" jsf:rendered="#{customQuestionResponse.customQuestion.required}" />
                                 </label>
-                                <p:inputTextarea id="customQuestionResponse" rows="10" autoResize="false"
+                                <p:inputText id="customQuestionResponse"
                                              styleClass="form-control" value="#{customQuestionResponse.response}"
                                              required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
                                              rendered="#{customQuestionResponse.customQuestion.questionType=='text'}"
                                              requiredMessage="#{bundle['requiredField']}"/>
                                 <p:message id="cqMessages" for="customQuestionResponse" display="text"/>
+                                <p:inputTextarea id="customQuestionResponse" rows="10" autoResize="false"
+                                             styleClass="form-control" value="#{customQuestionResponse.response}"
+                                             required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
+                                             rendered="#{customQuestionResponse.customQuestion.questionType=='short-text'}"
+                                             requiredMessage="#{bundle['requiredField']}"/>
+                                <p:message id="cqMessages" for="customQuestionResponse" display="text"/>
+                                <p:inputTextarea id="customQuestionResponse" rows="10" autoResize="false"
+                                             styleClass="form-control" value="#{customQuestionResponse.response}"
+                                             required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
+                                             rendered="#{customQuestionResponse.customQuestion.questionType=='long-text'}"
+                                             requiredMessage="#{bundle['requiredField']}"/>
+                                <p:message id="cqMessages" for="customQuestionResponse" display="text"/>
+                                <p:selectOneRadio id="customQuestionResponseSelectRadio" value="#{customQuestionResponse.response}"
+                                                 styleClass="form-control" layout="grid" columns="1"
+                                                 required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
+                                                 rendered="#{customQuestionResponse.customQuestion.questionType=='single-select'}"
+                                                 requiredMessage="#{bundle['requiredField']}" >
+                                     <f:selectItems value="#{customQuestionResponse.responseSelectItems}"/>
+                                </p:selectOneRadio>
+                                <p:selectManyCheckbox id="customQuestionResponseSelectCheckbox" value="#{customQuestionResponse.response}"
+                                                 styleClass="form-control" layout="grid" columns="1"
+                                                 required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
+                                                 rendered="#{customQuestionResponse.customQuestion.questionType=='multi-select'}"
+                                                 requiredMessage="#{bundle['requiredField']}" >
+                                     <f:selectItems value="#{customQuestionResponse.responseSelectItems}"/>
+                                </p:selectManyCheckbox>
                                 <p:selectOneMenu id="customQuestionResponseSelect"
                                                  styleClass="form-control" value="#{customQuestionResponse.response}"
                                                  required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"

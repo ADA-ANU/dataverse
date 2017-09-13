@@ -110,7 +110,11 @@
                                                             <h:selectOneMenu id="questionOptions" styleClass="form-control" value="#{cq.questionType}"
                                                                              onchange="#{GuestbookPage.toggleQuestionType(cq)}">
                                                                 <f:selectItem itemLabel="#{bundle['dataset.manageGuestbooks.guestbook.customQuestions.questionType.text']}" itemValue="text" />
-                                                                <f:selectItem itemLabel="#{bundle['dataset.manageGuestbooks.guestbook.customQuestions.questionType.multiple']}" itemValue="options" />
+                                                                <f:selectItem itemLabel="#{bundle['dataset.manageGuestbooks.guestbook.customQuestions.questionType.short-text']}" itemValue="short-text" />
+                                                                <f:selectItem itemLabel="#{bundle['dataset.manageGuestbooks.guestbook.customQuestions.questionType.long-text']}" itemValue="long-text" />
+                                                                <f:selectItem itemLabel="#{bundle['dataset.manageGuestbooks.guestbook.customQuestions.questionType.multi-select']}" itemValue="multi-select" />
+                                                                <f:selectItem itemLabel="#{bundle['dataset.manageGuestbooks.guestbook.customQuestions.questionType.single-select']}" itemValue="single-select" /><!--one selection only-->
+                                                                
                                                                 <p:ajax update=":guestbookForm:customQuestions" />
                                                                 <f:param name="SKIP_VALIDATION" value="true"/>
                                                             </h:selectOneMenu>
@@ -130,7 +134,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-offset-3 col-sm-9" jsf:rendered="#{cq.questionType eq 'options'}">
+                                                <div class="col-sm-offset-3 col-sm-9" jsf:rendered="#{(cq.questionType eq 'multi-select') or (cq.questionType eq 'single-select')}">
                                                     <label class="control-label" jsf:for="questionResponseOptions">
                                                         #{bundle['dataset.manageGuestbooks.guestbook.customQuestions.responseOptions']}
                                                     </label>
