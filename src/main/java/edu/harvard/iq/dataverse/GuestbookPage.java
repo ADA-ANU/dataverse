@@ -219,7 +219,7 @@ public class GuestbookPage implements java.io.Serializable {
         //        && questionIn.getQuestionType() !=null && questionIn.getQuestionType().equals("options")){
         if (questionIn.getCustomQuestionValues() != null && questionIn.getCustomQuestionValues().isEmpty() 
                 && questionIn.getQuestionType() !=null 
-                && (questionIn.getQuestionType().equals("multi-select") ||  questionIn.getQuestionType().equals("single-select")) ){
+                && (questionIn.getQuestionType().equals("multi-select") || questionIn.getQuestionType().equals("single-select")) ){
             questionIn.setCustomQuestionValues(new ArrayList<CustomQuestionValue>());
             CustomQuestionValue addCQV = new CustomQuestionValue();
             addCQV.setCustomQuestion(questionIn);

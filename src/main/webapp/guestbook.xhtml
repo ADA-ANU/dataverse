@@ -134,10 +134,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                          
+                                                HERE
+                                                <h:outputText value="#{cq.questionType}" />
+                                                
                                                 <div class="col-sm-offset-3 col-sm-9" jsf:rendered="#{(cq.questionType eq 'multi-select') or (cq.questionType eq 'single-select')}">
-                                                    <label class="control-label" jsf:for="questionResponseOptions">
-                                                        #{cq.questionType + " " + bundle['dataset.manageGuestbooks.guestbook.customQuestions.responseOptions']}
+                                                    <label class="control-label">
+                                                        #{bundle['dataset.manageGuestbooks.guestbook.customQuestions.responseOptions']}
                                                     </label>
                                                     <ui:repeat value="#{cq.customQuestionValues}" varStatus="resCount" var="value">
                                                         <div class="form-group">
