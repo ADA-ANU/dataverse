@@ -106,7 +106,7 @@
                                              requiredMessage="#{bundle['requiredField']}"/>
                                 <p:message id="cqMessagesLT" for="customQuestionResponseLongText" display="text"/>
                                 <p:selectOneRadio id="customQuestionResponseSelectRadio" value="#{customQuestionResponse.response}"
-                                                 styleClass="form-control" layout="grid" columns="1"
+                                                 layout="grid" columns="1"
                                                  required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
                                                  rendered="#{customQuestionResponse.customQuestion.questionType=='single-select'}"
                                                  requiredMessage="#{bundle['requiredField']}" >
