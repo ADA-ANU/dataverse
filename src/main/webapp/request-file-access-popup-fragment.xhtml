@@ -98,13 +98,13 @@
                                              required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
                                              rendered="#{customQuestionResponse.customQuestion.questionType=='short-text'}"
                                              requiredMessage="#{bundle['requiredField']}"/>
-                                <p:message id="cqMessages" for="customQuestionResponseShortText" display="text"/>
+                                <p:message id="cqMessagesST" for="customQuestionResponseShortText" display="text"/>
                                 <p:inputTextarea id="customQuestionResponseLongText" rows="10" autoResize="false"
                                              styleClass="form-control" value="#{customQuestionResponse.response}"
                                              required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
                                              rendered="#{customQuestionResponse.customQuestion.questionType=='long-text'}"
                                              requiredMessage="#{bundle['requiredField']}"/>
-                                <p:message id="cqMessages" for="customQuestionResponseLongText" display="text"/>
+                                <p:message id="cqMessagesLT" for="customQuestionResponseLongText" display="text"/>
                                 <p:selectOneRadio id="customQuestionResponseSelectRadio" value="#{customQuestionResponse.response}"
                                                  styleClass="form-control" layout="grid" columns="1"
                                                  required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
