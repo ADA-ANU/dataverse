@@ -105,6 +105,8 @@
                                              rendered="#{customQuestionResponse.customQuestion.questionType=='long-text'}"
                                              requiredMessage="#{bundle['requiredField']}"/>
                                 <p:message id="cqMessagesLT" for="customQuestionResponseLongText" display="text"/>
+                                HERE
+                                <h:outputText value="#{customQuestionResponse.responseSelectItems}" />
                                 <p:selectOneRadio id="customQuestionResponseSelectRadio" value="#{customQuestionResponse.response}"
                                                  layout="grid" columns="1"
                                                  required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
