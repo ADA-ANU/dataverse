@@ -153,7 +153,7 @@
         
         <div class="button-block">
             <p:commandLink type="button" styleClass="btn btn-default" value="#{bundle['file.requestAccessDialog.file.requestAccess']}" 
-                           rendered="#{workingVersion.guestbookWorkflowPoint == 'request' and fileDownloadHelper.session.user.authenticated}"
+                           rendered="#{fileDownloadHelper.session.user.authenticated and workingVersion.guestbookWorkflowPoint == 'request'}"
                            actionListener="#{fileDownloadHelper.requestAccessWithGuestbook(guestbookResponse)}"                          
                            update="@([id$=Messages])"
                            oncomplete="if (args &amp;&amp; !args.validationFailed){PF('guestbookAndTermsPopup').hide();window.location.replace(window.location.href);}">
