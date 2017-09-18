@@ -2469,7 +2469,7 @@ public class DatasetPage implements java.io.Serializable {
                  this.guestbookResponse.setDownloadtype(downloadType);
                  this.guestbookResponse.setFileFormat(downloadType);
                 RequestContext requestContext = RequestContext.getCurrentInstance();
-                requestContext.execute("PF('requestAccessPopup').show();handleResizeDialog('requestAccessPopup');");
+                requestContext.execute("PF('guestbookAndTermsPopup').show();handleResizeDialog('guestbookAndTermsPopup');");
              }
         }
        
@@ -2487,7 +2487,7 @@ public class DatasetPage implements java.io.Serializable {
          this.guestbookResponse.setDownloadtype("Download");
          this.guestbookResponse.setFileFormat("Download");
         RequestContext requestContext = RequestContext.getCurrentInstance();
-        requestContext.execute("PF('downloadPopup').show();handleResizeDialog('downloadPopup');");
+        requestContext.execute("PF('guestbookAndTermsPopup').show();handleResizeDialog('guestbookAndTermsPopup');");
     }
     
     /**

@@ -1075,11 +1075,11 @@
                     </p:dialog>
                     <!-- END: Request Access Sign Up/Log In Button -->
                     
-                    <p:dialog id="requestAccessPopup" styleClass="largePopUp" header="#{bundle['file.requestAccessDialog.header']}" widgetVar="requestAccessPopup" modal="true">
+                    <p:dialog id="guestbookAndTermsPopup" styleClass="largePopUp" header="#{bundle['file.requestAccessDialog.header']}" widgetVar="guestbookAndTermsPopup" modal="true">
                         <!--<p:ajax event="close" update="datasetForm:dataFilesTab" /> DOESN'T WORK-->
                         <o:importFunctions type="edu.harvard.iq.dataverse.util.MarkupChecker" />
 
-                        <ui:include src="request-file-access-popup-fragment.xhtml">
+                        <ui:include src="guestbook-and-terms.xhtml">
                             <ui:param name="workingVersion" value="#{DatasetPage.workingVersion}"/>
                             <ui:param name="downloadPopupRequired" value="#{DatasetPage.downloadPopupRequired}"/>
                             <ui:param name="guestbookResponse" value="#{DatasetPage.guestbookResponse}"/>
@@ -1091,21 +1091,6 @@
 
                     </p:dialog>
                     
-                    <p:dialog id="downloadPopup" styleClass="largePopUp" header="#{bundle['file.downloadDialog.header']}" widgetVar="downloadPopup" modal="true">
-                        <o:importFunctions type="edu.harvard.iq.dataverse.util.MarkupChecker" />
-
-                        <ui:include src="file-download-popup-fragment.xhtml">
-                            <ui:param name="workingVersion" value="#{DatasetPage.workingVersion}"/>
-                            <ui:param name="downloadPopupRequired" value="#{DatasetPage.downloadPopupRequired}"/>
-                            <ui:param name="guestbookResponse" value="#{DatasetPage.guestbookResponse}"/>
-                            <ui:param name="guestbookResponseService" value="#{DatasetPage.guestbookResponseService}"/>
-                            <ui:param name="fileDownloadHelper" value="#{DatasetPage.fileDownloadHelper}"/>
-                            <ui:param name="fileDownloadService" value="#{DatasetPage.fileDownloadService}"/>
-                            <ui:param name="twoRavensHelper" value="#{DatasetPage.twoRavensHelper}"/>
-                        </ui:include>
-
-                    </p:dialog>
-
                     <p:dialog id="downloadDataSubsetPopup" styleClass="smallPopUp" header="Download Data Subset" widgetVar="downloadDataSubsetPopup"
                               rendered="#{empty DatasetPage.editMode}" modal="true">
                         <div class="form-inline clearfix" jsf:rendered="#{!(empty DatasetPage.guestbookResponse.dataFile) and DatasetPage.guestbookResponse.dataFile.tabularData}">

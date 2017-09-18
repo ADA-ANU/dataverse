@@ -36,8 +36,8 @@
                     </h:commandLink>
                     <p:commandLink rendered="#{downloadPopupRequired}"                                            
                                    action="#{guestbookResponseService.modifyDatafileAndFormat(guestbookResponse, fileMetadata, 'explore' )}"
-                                   update="@widgetVar(downloadPopup)"
-                                   oncomplete="PF('downloadPopup').show();handleResizeDialog('downloadPopup');">
+                                   update="@widgetVar(guestbookAndTermsPopup)"
+                                   oncomplete="PF('guestbookAndTermsPopup').show();handleResizeDialog('guestbookAndTermsPopup');">
                         #{bundle['file.explore.twoRavens']} 
                     </p:commandLink>                          
                 </li>
@@ -51,8 +51,8 @@
                     <p:commandLink rendered="#{downloadPopupRequired}"
                                   styleClass="#{fileMetadata.dataFile.ingestInProgress ? 'disabled' : ''}"  
                                    action="#{guestbookResponseService.modifyDatafileAndFormat(guestbookResponse, fileMetadata, 'worldMap' )}"
-                                   update="@widgetVar(downloadPopup)"
-                                   oncomplete="PF('downloadPopup').show();handleResizeDialog('downloadPopup');">
+                                   update="@widgetVar(guestbookAndTermsPopup)"
+                                   oncomplete="PF('guestbookAndTermsPopup').show();handleResizeDialog('guestbookAndTermsPopup');">
                         #{bundle['file.mapData.viewMap']}
                     </p:commandLink>
                 </li>                       
@@ -72,7 +72,7 @@
                            type="button" styleClass="btn btn-default"
                            action="#{guestbookResponseService.modifyDatafileAndFormat(guestbookResponse, fileMetadata, 'explore' )}"
                            update="@widgetVar(downloadPopup)"
-                           oncomplete="PF('downloadPopup').show();handleResizeDialog('downloadPopup');">
+                           oncomplete="PF('guestbookAndTermsPopup').show();handleResizeDialog('guestbookAndTermsPopup');">
                 <span class="glyphicon glyphicon-equalizer"/> #{bundle.explore}
             </p:commandLink>
         </ui:fragment>
@@ -88,8 +88,8 @@
             <p:commandLink rendered="#{downloadPopupRequired}"
                            type="button" styleClass="btn btn-default"
                            action="#{guestbookResponseService.modifyDatafileAndFormat(guestbookResponse, fileMetadata, 'worldMap' )}"
-                           update="@widgetVar(downloadPopup)"
-                           oncomplete="PF('downloadPopup').show();handleResizeDialog('downloadPopup');">
+                           update="@widgetVar(guestbookAndTermsPopup)"
+                           oncomplete="PF('guestbookAndTermsPopup').show();handleResizeDialog('guestbookAndTermsPopup');">
                 <span class="glyphicon glyphicon-equalizer"/> #{bundle.explore}
             </p:commandLink>
         </ui:fragment>
@@ -123,7 +123,7 @@
         <p:commandLink rendered="#{ fileDownloadHelper.canDownloadFile(fileMetadata) and !(fileMetadata.dataFile.tabularData) and downloadPopupRequired }"
                        type="button" styleClass="btn btn-default"
                        action="#{guestbookResponseService.modifyDatafile(guestbookResponse, fileMetadata)}"
-                       update="@widgetVar(downloadPopup)" oncomplete="PF('downloadPopup').show();handleResizeDialog('downloadPopup');">
+                       update="@widgetVar(guestbookAndTermsPopup)" oncomplete="PF('guestbookAndTermsPopup').show();handleResizeDialog('guestbookAndTermsPopup');">
             <!-- guest book or terms of use, etc. enabled - open "download popup" first: -->
             <span class="glyphicon glyphicon-download-alt"/> #{bundle.download}
         </p:commandLink>
@@ -143,8 +143,8 @@
                         </p:commandLink>
                         <p:commandLink styleClass="highlightBold" rendered="#{downloadPopupRequired}"
                                        action="#{guestbookResponseService.modifyDatafileAndFormat(guestbookResponse, fileMetadata, 'bundle' )}"
-                                       update="@widgetVar(downloadPopup)"
-                                       oncomplete="PF('downloadPopup').show();handleResizeDialog('downloadPopup');">
+                                       update="@widgetVar(guestbookAndTermsPopup)"
+                                       oncomplete="PF('guestbookAndTermsPopup').show();handleResizeDialog('guestbookAndTermsPopup');">
                             #{bundle['file.downloadBtn.format.all']}
                         </p:commandLink>
                     </li>
@@ -159,8 +159,8 @@
                     </p:commandLink>
                     <p:commandLink rendered="#{downloadPopupRequired}"
                                    action="#{guestbookResponseService.modifyDatafileAndFormat(guestbookResponse, fileMetadata, 'original' )}"
-                                   update="@widgetVar(downloadPopup)"
-                                   oncomplete="PF('downloadPopup').show();handleResizeDialog('downloadPopup');">
+                                   update="@widgetVar(guestbookAndTermsPopup)"
+                                   oncomplete="PF('guestbookAndTermsPopup').show();handleResizeDialog('guestbookAndTermsPopup');">
                         <h:outputFormat value="#{bundle['file.downloadBtn.format.original']}">
                             <f:param value="#{fileMetadata.dataFile.originalFormatLabel}"/>
                         </h:outputFormat>
@@ -173,8 +173,8 @@
                     </p:commandLink>
                     <p:commandLink rendered="#{downloadPopupRequired}"
                                    action="#{guestbookResponseService.modifyDatafileAndFormat(guestbookResponse, fileMetadata, 'tab' )}"
-                                   update="@widgetVar(downloadPopup)"
-                                   oncomplete="PF('downloadPopup').show();handleResizeDialog('downloadPopup');">
+                                   update="@widgetVar(guestbookAndTermsPopup)"
+                                   oncomplete="PF('guestbookAndTermsPopup').show();handleResizeDialog('guestbookAndTermsPopup');">
                         #{bundle['file.downloadBtn.format.tab']}
                     </p:commandLink>
                 </li>
@@ -186,8 +186,8 @@
                         </p:commandLink>
                         <p:commandLink rendered="#{downloadPopupRequired}"
                                        action="#{guestbookResponseService.modifyDatafileAndFormat(guestbookResponse, fileMetadata, 'RData' )}"
-                                       update="@widgetVar(downloadPopup)"
-                                       oncomplete="PF('downloadPopup').show();handleResizeDialog('downloadPopup');">
+                                       update="@widgetVar(guestbookAndTermsPopup)"
+                                       oncomplete="PF('guestbookAndTermsPopup').show();handleResizeDialog('guestbookAndTermsPopup');">
                             #{bundle['file.downloadBtn.format.rdata']}
                         </p:commandLink>
                     </li>
@@ -199,8 +199,8 @@
                     </p:commandLink>
                     <p:commandLink rendered="#{downloadPopupRequired}"
                                    action="#{guestbookResponseService.modifyDatafileAndFormat(guestbookResponse, fileMetadata, 'var' )}"
-                                   update="@widgetVar(downloadPopup)"
-                                   oncomplete="PF('downloadPopup').show();handleResizeDialog('downloadPopup');">
+                                   update="@widgetVar(guestbookAndTermsPopup)"
+                                   oncomplete="PF('guestbookAndTermsPopup').show();handleResizeDialog('guestbookAndTermsPopup');">
                         #{bundle['file.downloadBtn.format.var']}
                     </p:commandLink>
                 </li>
@@ -213,8 +213,8 @@
                                    disabled="#{empty fileMetadata.dataFile.id}"/>
                     <p:commandLink id="fileDowloadDataSubsetButtonPopupReq" rendered="#{downloadPopupRequired}"
                                    actionListener="#{guestbookResponseService.modifyDatafileAndFormat(guestbookResponse,fileMetadata, 'subset')}"
-                                   update="@widgetVar(downloadPopup)"
-                                   oncomplete="PF('downloadPopup').show()"
+                                   update="@widgetVar(guestbookAndTermsPopup)"
+                                   oncomplete="PF('guestbookAndTermsPopup').show()"
                                    value="Data Subset"
                                    disabled="#{empty fileMetadata.dataFile.id}"/>
                 </li>
@@ -253,8 +253,8 @@
                                                                               }"
                        action="#{guestbookResponseService.modifyDatafile(guestbookResponse, fileMetadata)}"
                        onclick="if(PrimeFaces.widgets['filesTable']){ PF('filesTable').unselectAllRows(); }"
-                       update="@widgetVar(requestAccessPopup)"
-                       oncomplete="PF('requestAccessPopup').show()"
+                       update="@widgetVar(guestbookAndTermsPopup)"
+                       oncomplete="PF('guestbookAndTermsPopup').show()"
                        disabled="#{fileMetadata.dataFile.fileAccessRequesters.contains(dataverseSession.user)}">
             <!-- Request Access -->
             <!-- 4.2.1 - TODO: retest this on a dataset with fileRequest enabled and with some files restricted to the user -->

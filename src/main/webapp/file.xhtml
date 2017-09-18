@@ -413,9 +413,9 @@
                             <p:commandButton value="#{bundle.cancel}" onclick="PF('deleteFileConfirmation').hide()" type="button" />
                         </div>
                     </p:dialog>
-                    <p:dialog id="requestAccessPopup" styleClass="largePopUp" header="#{bundle['file.requestAccessDialog.header']}" widgetVar="requestAccessPopup" modal="true">
+                    <p:dialog id="guestbookAndTermsPopup" styleClass="largePopUp" header="#{bundle['file.requestAccessDialog.header']}" widgetVar="guestbookAndTermsPopup" modal="true">
                         <o:importFunctions type="edu.harvard.iq.dataverse.util.MarkupChecker" />
-                        <ui:include src="request-file-access-popup-fragment.xhtml">
+                        <ui:include src="guestbook-and-terms.xhtml">
                             <ui:param name="workingVersion" value="#{FilePage.fileMetadata.datasetVersion}"/>
                             <ui:param name="downloadPopupRequired" value="#{FilePage.downloadPopupRequired}"/>
                             <ui:param name="guestbookResponse" value="#{FilePage.guestbookResponse}"/>
@@ -425,16 +425,7 @@
                             <ui:param name="twoRavensHelper" value="#{FilePage.twoRavensHelper}"/>
                         </ui:include>
                     </p:dialog>
-                    <p:dialog id="downloadPopup" styleClass="largePopUp" header="#{bundle['file.downloadDialog.header']}" widgetVar="downloadPopup" modal="true">
-                         <ui:include src="file-download-popup-fragment.xhtml">
-                            <ui:param name="workingVersion" value="#{FilePage.fileMetadata.datasetVersion}"/>
-                            <ui:param name="downloadPopupRequired" value="#{FilePage.downloadPopupRequired}"/>
-                            <ui:param name="guestbookResponse" value="#{FilePage.guestbookResponse}"/>
-                            <ui:param name="guestbookResponseService" value="#{FilePage.guestbookResponseService}"/>
-                            <ui:param name="fileDownloadService" value="#{FilePage.fileDownloadService}"/>
-                            <ui:param name="twoRavensHelper" value="#{FilePage.twoRavensHelper}"/>
-                        </ui:include>
-                    </p:dialog>
+                   
                     <p:dialog id="downloadDataSubsetPopup" styleClass="smallPopUp" header="Download Data Subset" widgetVar="downloadDataSubsetPopup"
                                modal="true">
                         <div class="form-inline clearfix" jsf:rendered="#{!(empty FilePage.fileMetadata) and FilePage.fileMetadata.dataFile.tabularData}">

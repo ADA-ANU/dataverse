@@ -44,22 +44,22 @@
                                                                                and guestbookResponse.fileFormat != 'subset'
                                                                                 and guestbookResponse.fileFormat != 'worldMap'}"
                            actionListener="#{fileDownloadService.writeGuestbookAndStartDownload(guestbookResponse)}"
-                           oncomplete="PF('downloadPopup').hide();">
+                           oncomplete="PF('guestbookAndTermsPopup').hide();">
             </p:commandLink>
             <p:commandLink type="button" styleClass="btn btn-default" value="#{bundle.acceptTerms}" rendered="#{guestbookResponse.fileFormat == 'subset'}"
                            actionListener="#{fileDownloadService.writeGuestbookResponseRecord(guestbookResponse)}"
-                           update="@form" oncomplete="PF('downloadPopup').hide(); PF('downloadDataSubsetPopup').show();">                                                  
+                           update="@form" oncomplete="PF('guestbookAndTermsPopup').hide(); PF('downloadDataSubsetPopup').show();">                                                  
             </p:commandLink>
             <p:commandLink type="button" styleClass="btn btn-default" rendered="#{guestbookResponse.fileFormat == 'worldMap'}"
                            actionListener="#{fileDownloadService.startWorldMapDownloadLink(guestbookResponse, null)}" 
-                           oncomplete="PF('downloadPopup').hide();">
+                           oncomplete="PF('guestbookAndTermsPopup').hide();">
                 #{bundle['acceptTerms']} 
             </p:commandLink>
             <p:commandLink type="button" styleClass="btn btn-default"  rendered="#{guestbookResponse.fileFormat == 'explore'}"
                            actionListener="#{fileDownloadService.startExploreDownloadLink(guestbookResponse, null)}"                           
-                           oncomplete="PF('downloadPopup').hide();">
+                           oncomplete="PF('guestbookAndTermsPopup').hide();">
                 #{bundle['acceptTerms']}
             </p:commandLink>
-            <button type="button" class="btn btn-default" onclick="PF('downloadPopup').hide();PF('blockDatasetForm').hide();" value="#{bundle.cancel}">#{bundle.cancel}</button>
+            <button type="button" class="btn btn-default" onclick="PF('guestbookAndTermsPopup').hide();PF('blockDatasetForm').hide();" value="#{bundle.cancel}">#{bundle.cancel}</button>
         </div>
 </ui:composition>
