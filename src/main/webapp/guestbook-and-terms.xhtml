@@ -9,24 +9,17 @@
                 xmlns:iqbs="http://xmlns.jcp.org/jsf/composite/iqbs">
 
         <o:importFunctions type="edu.harvard.iq.dataverse.util.MarkupChecker" />
-     
+        
+        <c:set var="popupTip" value="#{(workingVersion.dataset.guestbook != null and workingVersion.dataset.guestbook.enabled and downloadPopupRequired) ? bundle['file.requestAccessDialog.tip'] : bundle['file.downloadDialog.tip']}" />
         <p class="help-block">
-            <span class="glyphicon glyphicon-info-sign"/> #{bundle['file.requestAccessDialog.tip']}
+            <span class="glyphicon glyphicon-info-sign"/> #{popupTip}
         </p>
-        
-        <h:outputText class="glyphicon glyphicon-info-sign" value="#{bundle['file.requestAccessDialog.tip']}" rendered="#{workingVersion.dataset.guestbook != null and workingVersion.dataset.guestbook.enabled and downloadPopupRequired}"/>
-        
+              
         <p:fragment id="guestbookMessages">
             <div class="container messagePanel">
                 <iqbs:messages collapsible="true" />
             </div>
         </p:fragment>
-        
-        <p class="help-block">
-            <span class="glyphicon glyphicon-info-sign"/> #{bundle['file.downloadDialog.tip']}
-        </p>
-        
-        <h:outputText class="glyphicon glyphicon-info-sign" value="#{bundle['file.downloadDialog.tip']}" rendered="#{(workingVersion.dataset.guestbook == null or workingVersion.dataset.guestbook.enabled) and downloadPopupRequired}"/>
         
         <div class="form-horizontal">
             <div class="form-group" jsf:rendered="#{workingVersion.termsOfUseAndAccess.license != 'CC0' and !empty workingVersion.termsOfUseAndAccess.termsOfUse}">
@@ -145,12 +138,6 @@
                 </div>
             </ui:fragment>
         </div>
-        <div class="button-block">
-            
-           
-            <button type="button" class="btn btn-default" onclick="PF('guestbookAndTermsPopup').hide();PF('blockDatasetForm').hide();" value="#{bundle.cancel}">#{bundle.cancel}</button>
-        </div>
-        
         <div class="button-block">
             <p:commandLink type="button" styleClass="btn btn-default" value="#{bundle['file.requestAccessDialog.file.requestAccess']}" 
                            rendered="#{fileDownloadHelper.session.user.authenticated and workingVersion.dataset.guestbookWorkflowPoint == 'request'}"
