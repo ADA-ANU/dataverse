@@ -112,8 +112,7 @@
                                                                 <f:selectItem itemLabel="#{bundle['dataset.manageGuestbooks.guestbook.customQuestions.questionType.text']}" itemValue="text" />
                                                                 <f:selectItem itemLabel="#{bundle['dataset.manageGuestbooks.guestbook.customQuestions.questionType.short-text']}" itemValue="short-text" />
                                                                 <f:selectItem itemLabel="#{bundle['dataset.manageGuestbooks.guestbook.customQuestions.questionType.long-text']}" itemValue="long-text" />
-                                                                <f:selectItem itemLabel="#{bundle['dataset.manageGuestbooks.guestbook.customQuestions.questionType.multi-select']}" itemValue="multi-select" />
-                                                                <f:selectItem itemLabel="#{bundle['dataset.manageGuestbooks.guestbook.customQuestions.questionType.single-select']}" itemValue="single-select" /><!--one selection only-->
+                                                                <f:selectItem itemLabel="#{bundle['dataset.manageGuestbooks.guestbook.customQuestions.questionType.options']}" itemValue="options" />
                                                                 
                                                                 <p:ajax update=":guestbookForm:customQuestions" />
                                                                 <f:param name="SKIP_VALIDATION" value="true"/>
@@ -134,10 +133,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                HERE 2
-                                                <h:outputText value="#{cq.questionType}" />
-                                                
-                                                <div class="col-sm-offset-3 col-sm-9" jsf:rendered="#{(cq.questionType eq 'multi-select') or (cq.questionType eq 'single-select')}">
+                                                <div class="col-sm-offset-3 col-sm-9" jsf:rendered="#{cq.questionType eq 'options'}">
                                                     <label class="control-label">
                                                         #{bundle['dataset.manageGuestbooks.guestbook.customQuestions.responseOptions']}
                                                     </label>

@@ -93,27 +93,18 @@
                                              rendered="#{customQuestionResponse.customQuestion.questionType=='text'}"
                                              requiredMessage="#{bundle['requiredField']}"/>
                                 <p:message id="cqMessages" for="customQuestionResponse" display="text"/>
-                                <p:inputTextarea id="customQuestionResponseShortText" rows="6" autoResize="true"
+                                <p:inputTextarea id="customQuestionResponseShortText" rows="4" cols="30" autoResize="true"
                                              value="#{customQuestionResponse.response}"
                                              required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
                                              rendered="#{customQuestionResponse.customQuestion.questionType=='short-text'}"
                                              requiredMessage="#{bundle['requiredField']}"/>
                                 <p:message id="cqMessagesST" for="customQuestionResponseShortText" display="text"/>
-                                <p:inputTextarea id="customQuestionResponseLongText" rows="10" autoResize="true"
+                                <p:inputTextarea id="customQuestionResponseLongText" rows="10" cols="30" autoResize="true"
                                              value="#{customQuestionResponse.response}"
                                              required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
                                              rendered="#{customQuestionResponse.customQuestion.questionType=='long-text'}"
                                              requiredMessage="#{bundle['requiredField']}"/>
                                 <p:message id="cqMessagesLT" for="customQuestionResponseLongText" display="text"/>
-                                HERE
-                                <h:outputText value="#{customQuestionResponse.responseSelectItems}" />
-                                <p:selectOneRadio id="customQuestionResponseSelectRadio" value="#{customQuestionResponse.response}"
-                                                 layout="grid" columns="1"
-                                                 required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
-                                                 rendered="#{customQuestionResponse.customQuestion.questionType=='single-select'}"
-                                                 requiredMessage="#{bundle['requiredField']}" >
-                                     <f:selectItems value="#{customQuestionResponse.responseSelectItems}"/>
-                                </p:selectOneRadio>
                                 <p:selectOneMenu id="customQuestionResponseSelectMenu"
                                                  styleClass="form-control" value="#{customQuestionResponse.response}"
                                                  required="#{param['DO_GB_VALIDATION'] and customQuestionResponse.customQuestion.required}"
