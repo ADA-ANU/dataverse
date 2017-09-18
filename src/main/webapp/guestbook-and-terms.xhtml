@@ -168,18 +168,18 @@
                            oncomplete="PF('guestbookAndTermsPopup').hide();">
             </p:commandLink>
             <p:commandLink type="button" styleClass="btn btn-default" value="#{bundle.acceptTerms}" 
-                           rendered="#{workingVersion.guestbookWorkflowPoint == 'download' and guestbookResponse.fileFormat == 'subset'}"
+                           rendered="#{workingVersion.dataset.guestbookWorkflowPoint == 'download' and guestbookResponse.fileFormat == 'subset'}"
                            actionListener="#{fileDownloadService.writeGuestbookResponseRecord(guestbookResponse)}"
                            update="@form" oncomplete="PF('guestbookAndTermsPopup').hide(); PF('downloadDataSubsetPopup').show();">                                                  
             </p:commandLink>
             <p:commandLink type="button" styleClass="btn btn-default" 
-                           rendered="#{workingVersion.guestbookWorkflowPoint == 'download' and guestbookResponse.fileFormat == 'worldMap'}"
+                           rendered="#{workingVersion.dataset.guestbookWorkflowPoint == 'download' and guestbookResponse.fileFormat == 'worldMap'}"
                            actionListener="#{fileDownloadService.startWorldMapDownloadLink(guestbookResponse, null)}" 
                            oncomplete="PF('guestbookAndTermsPopup').hide();">
                 #{bundle['acceptTerms']} 
             </p:commandLink>
             <p:commandLink type="button" styleClass="btn btn-default"  
-                           rendered="#{workingVersion.guestbookWorkflowPoint == 'download' and guestbookResponse.fileFormat == 'explore'}"
+                           rendered="#{workingVersion.dataset.guestbookWorkflowPoint == 'download' and guestbookResponse.fileFormat == 'explore'}"
                            actionListener="#{fileDownloadService.startExploreDownloadLink(guestbookResponse, null)}"                           
                            oncomplete="PF('guestbookAndTermsPopup').hide();">
                 #{bundle['acceptTerms']}
