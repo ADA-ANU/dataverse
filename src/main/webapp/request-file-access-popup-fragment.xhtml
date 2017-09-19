@@ -122,6 +122,32 @@
                 </div>
             </ui:fragment>
         </div>
+        <div class="form-horizontal">
+            <div class="form-group" jsf:rendered="#{workingVersion.termsOfUseAndAccess.license != 'CC0' and !empty workingVersion.termsOfUseAndAccess.termsOfUse}">
+                <label class="col-sm-3 control-label" for="guestbook_tou">
+                    #{bundle['file.dataFilesTab.terms.list.termsOfUse.termsOfUse']}
+                </label>
+                <div class="col-sm-6">
+                    <div class="panel panel-default">
+                        <div class="panel-body read-terms">
+                            <h:outputText value="#{MarkupChecker:sanitizeBasicHTML(workingVersion.termsOfUseAndAccess.termsOfUse)}" escape="false" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" jsf:rendered="#{!empty workingVersion.termsOfUseAndAccess.termsOfAccess}">
+                <label class="col-sm-3 control-label" for="guestbook_toa">
+                    #{bundle['file.dataFilesTab.terms.list.termsOfAccess.termsOfsAccess']}
+                </label>
+                <div class="col-sm-6">
+                    <div class="panel panel-default">
+                        <div class="panel-body read-terms">
+                            <h:outputText value="#{MarkupChecker:sanitizeBasicHTML(workingVersion.termsOfUseAndAccess.termsOfAccess)}" escape="false" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="button-block">
             <p:commandLink type="button" styleClass="btn btn-default" value="#{bundle['file.requestAccessDialog.file.requestAccess']}" 
                            rendered="#{fileDownloadHelper.session.user.authenticated}"
