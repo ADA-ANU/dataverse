@@ -1074,8 +1074,16 @@
                         </div>
                     </p:dialog>
                     <!-- END: Request Access Sign Up/Log In Button -->
+                    <c:set var="guestbookEnabled" value="#{DatasetPage.workingVersion.dataset.guestbook != null and DatasetPage.workingVersion.dataset.guestbook.enabled}" />
+                    <c:set var="guestbookAtRequest" value="#{guestbookEnabled and DatasetPage.workingVersion.dataset.guestbookWorkflowPoint == 'request' }" />
+                    <c:set var="guestbookAtDownload" value="#{guestbookEnabled and DatasetPage.workingVersion.dataset.guestbookWorkflowPoint == 'download' }" />
                     
-                    <p:dialog id="guestbookAndTermsPopup" styleClass="largePopUp" header="#{bundle['file.requestAccessDialog.header']}" widgetVar="guestbookAndTermsPopup" modal="true">
+                    <c:set var="guestbookAndTermsDialogTitle" value="#{(guestbookEnabled and guestbookAtRequest) ? bundle['file.requestAccessDialog.header'] : ''}" />
+                    <c:set var="guestbookAndTermsDialogTitle" value="#{(guestbookAndTermsDialogTitle == '' and guestbookEnabled and guestbookAtDownload) ? bundle['file.downloadDialog.header'] : ''}" />
+                    <c:set var="guestbookAndTermsDialogTitle" value="#{(guestbookAndTermsDialogTitle == '' and downloadPopupRequired) ? bundle['file.downloadDialog.header'] : ''}" />
+                    <c:set var="guestbookAndTermsDialogTitle" value="#{(guestbookAndTermsDialogTitle == '')? 'Empty':'Not Empty'}" />
+                    
+                    <p:dialog id="guestbookAndTermsPopup" styleClass="largePopUp" header="#{guestbookAndTermsDialogTitle}" widgetVar="guestbookAndTermsPopup" modal="true">
                         <!--<p:ajax event="close" update="datasetForm:dataFilesTab" /> DOESN'T WORK-->
                         <o:importFunctions type="edu.harvard.iq.dataverse.util.MarkupChecker" />
 
