@@ -3404,9 +3404,10 @@ public class DatasetPage implements java.io.Serializable {
         logger.info("guestbookAndTermsDialogTitle ds.getGuestbookWorkflowPoint: " + ds.getGuestbookWorkflowPoint() );
         
         if(guestbookEnabled && ds.getGuestbookWorkflowPoint() == "request"){
+            logger.info("guestbookAndTermsDialogTitle here 1");
             title = BundleUtil.getStringFromBundle("file.requestAccessDialog.header");
         }
- 
+        logger.info("guestbookAndTermsDialogTitle here 2");
         return title;
     }
       
@@ -3420,9 +3421,11 @@ public class DatasetPage implements java.io.Serializable {
         logger.info("guestbookAndTermsDialogHelpTip ds.getGuestbookWorkflowPoint: " + ds.getGuestbookWorkflowPoint() );
         
         if( dsGuestbook != null && dsGuestbook.isEnabled() && ds.getGuestbookWorkflowPoint() == "request"){
+            logger.info("guestbookAndTermsDialogHelpTip here 1");
             helpTip = BundleUtil.getStringFromBundle("file.requestAccessDialog.tip");
         }
         
+        logger.info("guestbookAndTermsDialogHelpTip here 2");
         return helpTip;
         
     }
