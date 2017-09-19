@@ -3412,7 +3412,20 @@ public class DatasetPage implements java.io.Serializable {
  
         return title;
     }
-            
+      
+    public String guestbookAndTermsDialogHelpTip(){
+        String helpTip = BundleUtil.getStringFromBundle("file.downloadDialog.tip");
+        
+        Dataset ds = this.workingVersion.getDataset();
+        Guestbook dsGuestbook = ds.getGuestbook();
+        
+        if( dsGuestbook != null && dsGuestbook.isEnabled() && ds.getGuestbookWorkflowPoint() == "request"){
+            helpTip = BundleUtil.getStringFromBundle("file.requestAccessDialog.tip");
+        }
+        
+        return helpTip;
+        
+    }
             
     public String requestAccessMultipleRestrictedFiles(){
         this.filterSelectedRestrictedFiles();
