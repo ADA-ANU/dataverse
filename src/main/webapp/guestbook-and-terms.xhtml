@@ -139,7 +139,7 @@
             </ui:fragment>
         </div>
         HERE gbwfp:
-        <h:outputText value="#{workingVersion.getDataset().getGuestbookWorkflowPoint}" />
+        <h:outputText value="#{workingVersion.getDataset().getGuestbookWorkflowPoint()}" />
         HERE 2 true or false:
         <h:outputText value="#{fileDownloadHelper.session.user.authenticated and workingVersion.dataset.guestbookWorkflowPoint == 'request'}" />
         <div class="button-block">
