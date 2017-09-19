@@ -1080,12 +1080,13 @@
                     guestbookAtRequest: <h:outputText value="#{guestbookAtRequest}" />
                     <c:set var="guestbookAtDownload" value="#{guestbookEnabled and DatasetPage.workingVersion.dataset.guestbookWorkflowPoint == 'download' }" />
                     guestbookAtDownload: <h:outputText value="#{guestbookAtDownload}" />
+                    DatasetPage.downloadPopupRequired: <h:outputText value="#{DatasetPage.downloadPopupRequired}" />
                     
                     <c:set var="guestbookAndTermsDialogTitle" value="#{(guestbookEnabled and guestbookAtRequest) ? bundle['file.requestAccessDialog.header'] : ''}" />
                     guestbookAndTermsDialogTitle 1: <h:outputText value="#{guestbookAndTermsDialogTitle}" />
                     <c:set var="guestbookAndTermsDialogTitle" value="#{(guestbookAndTermsDialogTitle == '' and guestbookEnabled and guestbookAtDownload) ? bundle['file.downloadDialog.header'] : ''}" />
                     guestbookAndTermsDialogTitle 2: <h:outputText value="#{guestbookAndTermsDialogTitle}" />
-                    <c:set var="guestbookAndTermsDialogTitle" value="#{(guestbookAndTermsDialogTitle == '' and downloadPopupRequired) ? bundle['file.downloadDialog.header'] : ''}" />
+                    <c:set var="guestbookAndTermsDialogTitle" value="#{(guestbookAndTermsDialogTitle == '' and DatasetPage.downloadPopupRequired) ? bundle['file.downloadDialog.header'] : ''}" />
                     guestbookAndTermsDialogTitle 3: <h:outputText value="#{guestbookAndTermsDialogTitle}" />
                     <c:set var="guestbookAndTermsDialogTitle" value="#{(guestbookAndTermsDialogTitle == '')? 'Empty':'Not Empty'}" />
                     guestbookAndTermsDialogTitle 4: <h:outputText value="#{guestbookAndTermsDialogTitle}" />
