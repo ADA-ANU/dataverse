@@ -1088,7 +1088,7 @@
                     guestbookAndTermsDialogTitle 2: <h:outputText value="#{guestbookAndTermsDialogTitle}" />
                     <c:set var="guestbookAndTermsDialogTitle" value="#{(guestbookAndTermsDialogTitle == '' and DatasetPage.downloadPopupRequired) ? bundle['file.downloadDialog.header'] : ''}" />
                     guestbookAndTermsDialogTitle 3: <h:outputText value="#{guestbookAndTermsDialogTitle}" />
-                    <c:set var="guestbookAndTermsDialogTitle" value="#{(guestbookAndTermsDialogTitle == '')? 'Empty':'Not Empty'}" />
+                    <c:set var="guestbookAndTermsDialogTitle" value="#{(guestbookAndTermsDialogTitle == '')? 'Empty': guestbookAndTermsDialogTitle}" />
                     guestbookAndTermsDialogTitle 4: <h:outputText value="#{guestbookAndTermsDialogTitle}" />
                     
                     <p:dialog id="guestbookAndTermsPopup" styleClass="largePopUp" header="#{guestbookAndTermsDialogTitle}" widgetVar="guestbookAndTermsPopup" modal="true">
