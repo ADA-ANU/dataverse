@@ -3392,6 +3392,28 @@ public class DatasetPage implements java.io.Serializable {
         return FileUtil.isDownloadPopupRequired(workingVersion);
     }
    
+    public String guestbookAndTermsDialogTitle(){
+        String title = BundleUtil.getStringFromBundle("file.downloadDialog.header");
+        
+        Dataset ds = this.workingVersion.getDataset();
+        Guestbook dsGuestbook = ds.getGuestbook();
+        
+        boolean guestbookEnabled = dsGuestbook != null && dsGuestbook.isEnabled();
+        
+        if(!guestbookEnabled){
+            return title;
+        }
+        
+        if(guestbookEnabled){
+            if(ds.getGuestbookWorkflowPoint() == "request"){
+                title = BundleUtil.getStringFromBundle("file.requestAccessDialog.header");
+            }   
+        }
+ 
+        return title;
+    }
+            
+            
     public String requestAccessMultipleRestrictedFiles(){
         this.filterSelectedRestrictedFiles();
         return requestAccessMultipleFiles(this.getSelectedRestrictedFilesIdsString());
