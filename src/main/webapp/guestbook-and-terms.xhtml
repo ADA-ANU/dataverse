@@ -139,7 +139,7 @@
         </div>
         <div class="button-block">
             <p:commandLink type="button" styleClass="btn btn-default" value="#{bundle['file.requestAccessDialog.file.requestAccess']}" 
-                           rendered="#{fileDownloadHelper.session.user.authenticated and workingVersion.dataset.guestbookWorkflowPoint == 'request'}"
+                           rendered="#{fileDownloadHelper.session.user.authenticated and workingVersion.dataset.guestbook != null and  workingVersion.dataset.guestbook.enabled and  workingVersion.dataset.guestbookWorkflowPoint == 'request'}"
                            actionListener="#{fileDownloadHelper.requestAccessWithGuestbook(guestbookResponse)}"                          
                            update="@([id$=Messages])"
                            oncomplete="if (args &amp;&amp; !args.validationFailed){PF('guestbookAndTermsPopup').hide();window.location.replace(window.location.href);}">
