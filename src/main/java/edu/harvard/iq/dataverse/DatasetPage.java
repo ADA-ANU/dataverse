@@ -3403,7 +3403,7 @@ public class DatasetPage implements java.io.Serializable {
         logger.info("guestbookAndTermsDialogTitle dsGuestbook is enabled: " + dsGuestbook.isEnabled() );
         logger.info("guestbookAndTermsDialogTitle ds.getGuestbookWorkflowPoint: " + ds.getGuestbookWorkflowPoint() );
         
-        if(guestbookEnabled && ds.getGuestbookWorkflowPoint() == "request"){
+        if(guestbookEnabled && ds.getGuestbookWorkflowPoint().equals("request")){
             logger.info("guestbookAndTermsDialogTitle here 1");
             title = BundleUtil.getStringFromBundle("file.requestAccessDialog.header");
         }
@@ -3420,7 +3420,7 @@ public class DatasetPage implements java.io.Serializable {
         logger.info("guestbookAndTermsDialogHelpTip dsGuestbook is enabled: " + dsGuestbook.isEnabled() );
         logger.info("guestbookAndTermsDialogHelpTip ds.getGuestbookWorkflowPoint: " + ds.getGuestbookWorkflowPoint() );
         
-        if( dsGuestbook != null && dsGuestbook.isEnabled() && ds.getGuestbookWorkflowPoint() == "request"){
+        if( dsGuestbook != null && dsGuestbook.isEnabled() && ds.getGuestbookWorkflowPoint().equals("request")){
             logger.info("guestbookAndTermsDialogHelpTip here 1");
             helpTip = BundleUtil.getStringFromBundle("file.requestAccessDialog.tip");
         }
