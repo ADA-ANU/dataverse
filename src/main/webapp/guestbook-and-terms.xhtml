@@ -10,9 +10,11 @@
 
         <o:importFunctions type="edu.harvard.iq.dataverse.util.MarkupChecker" />
         
-        dataset guestbook is null: <h:outputText value="#{(workingVersion.dataset.guestbook != null)}" />
+        dataset guestbook is null: <h:outputText value="#{(workingVersion.dataset.guestbook == null)}" />
         workingVersion.dataset.guestbook.enabled: <h:outputText value="#{(workingVersion.dataset.guestbook.enabled)}" />
         downloadPopupRequired: <h:outputText value="#{downloadPopupRequired}" />
+        
+        test condition for popupTip: <h:outputText value="#{(workingVersion.dataset.guestbook != null and workingVersion.dataset.guestbook.enabled and downloadPopupRequired)}" />
         
         <c:set var="popupTip" value="#{(workingVersion.dataset.guestbook != null and workingVersion.dataset.guestbook.enabled and downloadPopupRequired) ? bundle['file.requestAccessDialog.tip'] : bundle['file.downloadDialog.tip']}" />
         <p class="help-block">
