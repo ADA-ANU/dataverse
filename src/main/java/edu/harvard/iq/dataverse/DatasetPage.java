@@ -3400,14 +3400,10 @@ public class DatasetPage implements java.io.Serializable {
         
         boolean guestbookEnabled = (dsGuestbook != null && dsGuestbook.isEnabled());
         
-        logger.info("guestbookAndTermsDialogTitle dsGuestbook is enabled: " + dsGuestbook.isEnabled() );
-        logger.info("guestbookAndTermsDialogTitle ds.getGuestbookWorkflowPoint: " + ds.getGuestbookWorkflowPoint() );
-        
         if(guestbookEnabled && ds.getGuestbookWorkflowPoint().equals("request")){
-            logger.info("guestbookAndTermsDialogTitle here 1");
             title = BundleUtil.getStringFromBundle("file.requestAccessDialog.header");
         }
-        logger.info("guestbookAndTermsDialogTitle here 2");
+   
         return title;
     }
       
@@ -3417,19 +3413,16 @@ public class DatasetPage implements java.io.Serializable {
         Dataset ds = this.workingVersion.getDataset();
         Guestbook dsGuestbook = ds.getGuestbook();
         
-        logger.info("guestbookAndTermsDialogHelpTip dsGuestbook is enabled: " + dsGuestbook.isEnabled() );
-        logger.info("guestbookAndTermsDialogHelpTip ds.getGuestbookWorkflowPoint: " + ds.getGuestbookWorkflowPoint() );
+        boolean guestbookEnabled = (dsGuestbook != null && dsGuestbook.isEnabled());
         
-        if( dsGuestbook != null && dsGuestbook.isEnabled() && ds.getGuestbookWorkflowPoint().equals("request")){
-            logger.info("guestbookAndTermsDialogHelpTip here 1");
+        if( guestbookEnabled && ds.getGuestbookWorkflowPoint().equals("request")){
             helpTip = BundleUtil.getStringFromBundle("file.requestAccessDialog.tip");
         }
         
-        logger.info("guestbookAndTermsDialogHelpTip here 2");
         return helpTip;
         
     }
-            
+    
     public String requestAccessMultipleRestrictedFiles(){
         this.filterSelectedRestrictedFiles();
         return requestAccessMultipleFiles(this.getSelectedRestrictedFilesIdsString());
