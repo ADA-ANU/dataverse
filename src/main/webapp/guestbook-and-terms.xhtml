@@ -138,9 +138,6 @@
                 </div>
             </ui:fragment>
         </div>
-        HERE gict: <h:outputText value="#{workingVersion.dataset.globalIdCreateTime}" />
-        HERE 2 true or false: <h:outputText value="#{fileDownloadHelper.session.user.authenticated and workingVersion.dataset.guestbookWorkflowPoint == 'request'}" />
-        
         <div class="button-block">
             <p:commandLink type="button" styleClass="btn btn-default" value="#{bundle['file.requestAccessDialog.file.requestAccess']}" 
                            rendered="#{fileDownloadHelper.session.user.authenticated and workingVersion.dataset.guestbookWorkflowPoint == 'request'}"
