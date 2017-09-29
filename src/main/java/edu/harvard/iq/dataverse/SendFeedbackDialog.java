@@ -57,7 +57,7 @@ public class SendFeedbackDialog implements java.io.Serializable {
     }
     
     public void initUserInput(ActionEvent ae) {
-        System.out.println("initUserInput()");
+        
         userEmail="";
         userMessage="";
         messageTo="";
@@ -113,7 +113,6 @@ public class SendFeedbackDialog implements java.io.Serializable {
     }
 
     public void setUserMessage (String mess) {
-        System.out.println("setUserMessage: "+mess);
         userMessage = mess;
     }
     
