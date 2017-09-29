@@ -189,10 +189,8 @@ public class SendFeedbackDialog implements java.io.Serializable {
            
                String pattern = ResourceBundle.getBundle("Bundle").getString("contact.msg.append.dataverseDetails");String[] paramArrayRequestFileAccess = {dv.getDisplayName()};
                String messageText = MessageFormat.format(pattern, paramArrayRequestFileAccess);
-               System.out.println("sendMessage dataverseMessageText: " + messageText);
                this.setUserMessage(userMessage + messageText);
-               //userMessage = userMessage + "\n\n\nDataverse: " + dv.getDisplayName();
-
+               
                email = getDataverseEmail((Dataverse)recipient);
             }
             else if (recipient.isInstanceofDataset()) {
@@ -201,10 +199,8 @@ public class SendFeedbackDialog implements java.io.Serializable {
                 String pattern = ResourceBundle.getBundle("Bundle").getString("contact.msg.append.datasetDetails");
                 String[] paramArrayRequestFileAccess = {d.getIdentifier(),d.getDisplayName()};
                 String messageText = MessageFormat.format(pattern, paramArrayRequestFileAccess);
-                System.out.println("sendMessage datasetMessageText: " + messageText);
                 this.setUserMessage(userMessage + messageText);
                 
-                //userMessage = userMessage + "\n\n\nDataset " + d.getGlobalId() + "\n\nDataset Title: " + d.getDisplayName();
                 for (DatasetField df : d.getLatestVersion().getFlatDatasetFields()){
                     if (df.getDatasetFieldType().getName().equals(DatasetFieldConstant.datasetContactEmail)) {
                         if (!email.isEmpty()) {
@@ -218,7 +214,6 @@ public class SendFeedbackDialog implements java.io.Serializable {
                 }
             }
         }
-        System.out.println("sendMessage() message: " + this.userMessage);
         
         if (email.isEmpty()) {
                 String systemEmail =  settingsService.getValueForKey(SettingsServiceBean.Key.SystemEmail);
@@ -231,23 +226,15 @@ public class SendFeedbackDialog implements java.io.Serializable {
         }
         if (isLoggedIn() && userMessage!=null) {
             mailService.sendMail(loggedInUserEmail(), email, getMessageSubject(), userMessage);
-            System.out.println("sendMessage after sendMail 1");
-            System.out.println("sendMessage() to: " + loggedInUserEmail());
-            System.out.println("sendMessage() from: " + email);
-        
             userMessage = "";
             return null;
         } else {
             if (userEmail != null && userMessage != null) {
                 mailService.sendMail(userEmail, email, getMessageSubject(), userMessage);
-                System.out.println("sendMessage after sendMail 2");
-                System.out.println("sendMessage() to: " + userEmail);
-                System.out.println("sendMessage() from: " + email);
                 userMessage = "";
                 return null;
             } else {
                 userMessage = "";
-                System.out.println("sendMessage no mail sent at all");
                 return null;
             }
         }
