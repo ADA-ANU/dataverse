@@ -186,11 +186,8 @@ public class SendFeedbackDialog implements java.io.Serializable {
         if (recipient!=null) {
             if (recipient.isInstanceofDataverse() ) {
                Dataverse dv = (Dataverse)recipient;
-               ResourceBundle.clearCache();
-               String pattern = ResourceBundle.getBundle("Bundle").getString("contact.msg.append.dataverseDetails");
-               
-               System.out.println("sendMessage pattern: " + pattern);
-               String[] paramArrayRequestFileAccess = {dv.getDisplayName()};
+           
+               String pattern = ResourceBundle.getBundle("Bundle").getString("contact.msg.append.dataverseDetails");String[] paramArrayRequestFileAccess = {dv.getDisplayName()};
                String messageText = MessageFormat.format(pattern, paramArrayRequestFileAccess);
                System.out.println("sendMessage dataverseMessageText: " + messageText);
                this.setUserMessage(userMessage + messageText);
@@ -200,9 +197,8 @@ public class SendFeedbackDialog implements java.io.Serializable {
             }
             else if (recipient.isInstanceofDataset()) {
                 Dataset d = (Dataset)recipient;
-                ResourceBundle.clearCache();
+                
                 String pattern = ResourceBundle.getBundle("Bundle").getString("contact.msg.append.datasetDetails");
-                System.out.println("sendMessage pattern: " + pattern);
                 String[] paramArrayRequestFileAccess = {d.getIdentifier(),d.getDisplayName()};
                 String messageText = MessageFormat.format(pattern, paramArrayRequestFileAccess);
                 System.out.println("sendMessage datasetMessageText: " + messageText);
@@ -223,6 +219,7 @@ public class SendFeedbackDialog implements java.io.Serializable {
             }
         }
         System.out.println("sendMessage() message: " + this.userMessage);
+        
         if (email.isEmpty()) {
                 String systemEmail =  settingsService.getValueForKey(SettingsServiceBean.Key.SystemEmail);
                 InternetAddress systemAddress =  MailUtil.parseSystemAddress(systemEmail);
@@ -235,12 +232,17 @@ public class SendFeedbackDialog implements java.io.Serializable {
         if (isLoggedIn() && userMessage!=null) {
             mailService.sendMail(loggedInUserEmail(), email, getMessageSubject(), userMessage);
             System.out.println("sendMessage after sendMail 1");
+            System.out.println("sendMessage() to: " + loggedInUserEmail());
+            System.out.println("sendMessage() from: " + email);
+        
             userMessage = "";
             return null;
         } else {
             if (userEmail != null && userMessage != null) {
                 mailService.sendMail(userEmail, email, getMessageSubject(), userMessage);
-                System.out.println("sendMessage after sendMail 1");
+                System.out.println("sendMessage after sendMail 2");
+                System.out.println("sendMessage() to: " + userEmail);
+                System.out.println("sendMessage() from: " + email);
                 userMessage = "";
                 return null;
             } else {
