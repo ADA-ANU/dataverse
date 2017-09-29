@@ -234,15 +234,18 @@ public class SendFeedbackDialog implements java.io.Serializable {
         }
         if (isLoggedIn() && userMessage!=null) {
             mailService.sendMail(loggedInUserEmail(), email, getMessageSubject(), userMessage);
+            System.out.println("sendMessage after sendMail 1");
             userMessage = "";
             return null;
         } else {
             if (userEmail != null && userMessage != null) {
                 mailService.sendMail(userEmail, email, getMessageSubject(), userMessage);
+                System.out.println("sendMessage after sendMail 1");
                 userMessage = "";
                 return null;
             } else {
                 userMessage = "";
+                System.out.println("sendMessage no mail sent at all");
                 return null;
             }
         }
