@@ -187,6 +187,7 @@ public class SendFeedbackDialog implements java.io.Serializable {
             if (recipient.isInstanceofDataverse() ) {
                Dataverse dv = (Dataverse)recipient;
                String pattern = ResourceBundle.getBundle("Bundle").getString("contact.msg.append.dataverseDetails");
+               System.out.println("sendMessage pattern: " + pattern);
                String[] paramArrayRequestFileAccess = {dv.getDisplayName()};
                String messageText = MessageFormat.format(pattern, paramArrayRequestFileAccess);
                System.out.println("sendMessage dataverseMessageText: " + messageText);
@@ -198,6 +199,7 @@ public class SendFeedbackDialog implements java.io.Serializable {
             else if (recipient.isInstanceofDataset()) {
                 Dataset d = (Dataset)recipient;
                 String pattern = ResourceBundle.getBundle("Bundle").getString("contact.msg.append.datasetDetails");
+                System.out.println("sendMessage pattern: " + pattern);
                 String[] paramArrayRequestFileAccess = {d.getIdentifier(),d.getDisplayName()};
                 String messageText = MessageFormat.format(pattern, paramArrayRequestFileAccess);
                 System.out.println("sendMessage datasetMessageText: " + messageText);
