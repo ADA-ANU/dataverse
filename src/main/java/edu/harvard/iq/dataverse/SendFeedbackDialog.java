@@ -3,8 +3,10 @@ package edu.harvard.iq.dataverse;
 import edu.harvard.iq.dataverse.settings.SettingsServiceBean;
 import static edu.harvard.iq.dataverse.util.JsfHelper.JH;
 import edu.harvard.iq.dataverse.util.MailUtil;
+import java.util.ResourceBundle;
 import java.util.Random;
 import java.util.logging.Logger;
+import java.text.MessageFormat;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -183,10 +185,24 @@ public class SendFeedbackDialog implements java.io.Serializable {
         String email = "";
         if (recipient!=null) {
             if (recipient.isInstanceofDataverse() ) {
+               Dataverse dv = (Dataverse)recipient;
+               String pattern = ResourceBundle.getBundle("Bundle").getString("contact.msg.append.dataverseDetails");
+               String[] paramArrayRequestFileAccess = {dv.getDisplayName()};
+               String messageText = MessageFormat.format(pattern, paramArrayRequestFileAccess);
+               this.setUserMessage(userMessage + messageText);
+               
+               //userMessage = userMessage + "\n\n\nDataverse: " + dv.getDisplayName();
+
                email = getDataverseEmail((Dataverse)recipient);
             }
             else if (recipient.isInstanceofDataset()) {
                 Dataset d = (Dataset)recipient;
+                String pattern = ResourceBundle.getBundle("Bundle").getString("contact.msg.append.datasetDetails");
+                String[] paramArrayRequestFileAccess = {d.getIdentifier(),d.getDisplayName()};
+                String messageText = MessageFormat.format(pattern, paramArrayRequestFileAccess);
+                this.setUserMessage(userMessage + messageText);
+                
+                //userMessage = userMessage + "\n\n\nDataset " + d.getGlobalId() + "\n\nDataset Title: " + d.getDisplayName();
                 for (DatasetField df : d.getLatestVersion().getFlatDatasetFields()){
                     if (df.getDatasetFieldType().getName().equals(DatasetFieldConstant.datasetContactEmail)) {
                         if (!email.isEmpty()) {
