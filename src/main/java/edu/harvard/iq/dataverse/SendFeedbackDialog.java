@@ -189,8 +189,8 @@ public class SendFeedbackDialog implements java.io.Serializable {
                String pattern = ResourceBundle.getBundle("Bundle").getString("contact.msg.append.dataverseDetails");
                String[] paramArrayRequestFileAccess = {dv.getDisplayName()};
                String messageText = MessageFormat.format(pattern, paramArrayRequestFileAccess);
+               System.out.println("sendMessage dataverseMessageText: " + messageText);
                this.setUserMessage(userMessage + messageText);
-               
                //userMessage = userMessage + "\n\n\nDataverse: " + dv.getDisplayName();
 
                email = getDataverseEmail((Dataverse)recipient);
@@ -200,6 +200,7 @@ public class SendFeedbackDialog implements java.io.Serializable {
                 String pattern = ResourceBundle.getBundle("Bundle").getString("contact.msg.append.datasetDetails");
                 String[] paramArrayRequestFileAccess = {d.getIdentifier(),d.getDisplayName()};
                 String messageText = MessageFormat.format(pattern, paramArrayRequestFileAccess);
+                System.out.println("sendMessage datasetMessageText: " + messageText);
                 this.setUserMessage(userMessage + messageText);
                 
                 //userMessage = userMessage + "\n\n\nDataset " + d.getGlobalId() + "\n\nDataset Title: " + d.getDisplayName();
@@ -216,6 +217,7 @@ public class SendFeedbackDialog implements java.io.Serializable {
                 }
             }
         }
+        System.out.println("sendMessage() message: " + this.userMessage);
         if (email.isEmpty()) {
                 String systemEmail =  settingsService.getValueForKey(SettingsServiceBean.Key.SystemEmail);
                 InternetAddress systemAddress =  MailUtil.parseSystemAddress(systemEmail);
