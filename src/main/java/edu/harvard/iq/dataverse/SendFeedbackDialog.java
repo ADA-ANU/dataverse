@@ -186,7 +186,9 @@ public class SendFeedbackDialog implements java.io.Serializable {
         if (recipient!=null) {
             if (recipient.isInstanceofDataverse() ) {
                Dataverse dv = (Dataverse)recipient;
-               String pattern = ResourceBundle.getBundle("Bundle").getString("contact.msg.append.dataverseDetails");
+               //String pattern = ResourceBundle.getBundle("Bundle").getString("contact.msg.append.dataverseDetails");
+               String pattern = ResourceBundle.getBundle("Bundle").getString("notification.requestFileAccess");
+               
                System.out.println("sendMessage pattern: " + pattern);
                String[] paramArrayRequestFileAccess = {dv.getDisplayName()};
                String messageText = MessageFormat.format(pattern, paramArrayRequestFileAccess);
