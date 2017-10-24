@@ -710,6 +710,129 @@ public class DataFileServiceBean implements java.io.Serializable {
         owner.setFiles(dataFiles);
     }
     
+    /* methods for referral of file access requests to approvers */
+    
+    /** 
+     * Returns true if the File Access Request has been referred to users with 'approver' role, false otherwise. Calling method
+     * should ensure df and requester are not null as this method does not check.
+     * @param df        the DataFile to check if it has been referred
+     * @param requester the AuthenticatedUser to check if DataFile they requested has been referred
+     * @return boolean  true if the request for df and requester has been referred, false otherwise
+     */
+    
+    public boolean isFileAccessRequestReferredToApprovers(DataFile df, AuthenticatedUser requester){
+       Object result = em.createNativeQuery("select referred_to_approvers from fileaccessrequests where authenticated_user_id = " + requester.getId() + " and datafile_id = "+df.getId()).getResultList();
+       return ((Boolean) result).booleanValue();
+    }
+    
+    /**
+     * Returns the number of File Access Requests successfully referred to approvers.
+     * @param df    the DataFile to check if it has been referred
+     * @param au    the AuthenticatedUser that requested the File Access
+     * @return int  the number of file access requests that were referred for the DataFile and AuthenticatedUser
+     */
+    public int referFileAccessRequestToApprovers(DataFile df, AuthenticatedUser au){
+        List<DataFile> dfList = new ArrayList<DataFile>();
+        dfList.add(df);
+        
+        return referFileAccessRequestsToApprovers(dfList,au);
+    }
+    
+    /**
+     * Returns the number of File Access Requests that were referred to users with 'Approver' role 
+     * @param dfs   List of DataFiles to refer access requests for
+     * @param au    AuthenticatedUser that requested access to the files
+     * @return      The number of files (hopefully all), successfully referred
+     */
+    public int referFileAccessRequestsToApprovers(List<DataFile> dfs, AuthenticatedUser au){
+        int num_referred = 0;
+        
+        if( dfs != null && !dfs.isEmpty()){
+            String sql_file_string = "(";
+            for(DataFile df : dfs){
+                sql_file_string = sql_file_string + df.getId() + ",";
+            }
+            sql_file_string = sql_file_string.substring(0,sql_file_string.lastIndexOf(","));
+            sql_file_string = sql_file_string + ")";
+            
+            String sql_update_string = "update fileaccessrequests set referred_to_approvers='t' where authenticated_user_id="+ au.getId() + " and datafile_id in " + sql_file_string;
+            num_referred = em.createNativeQuery(sql_update_string).executeUpdate();
+        }
+       
+        return num_referred;
+    }
+    
+    /**
+     * Updates the fileaccessrequests table to indicate that all DataFiles in a Dataset that an AuthenticatedUser has requested access to, have been referred to users with an 'Approver' role
+     * @param ds    the
+     * @param au
+     * @return int  number of fileaccessrequest rows updated with referred_to_approvers='t'
+     */
+    public int referFileAccessRequestsForDatasetToApprovers(Dataset ds, AuthenticatedUser au){
+        int num_referred = em.createNativeQuery("update fileaccessrequests set referred_to_approvers='t' where authenticated_user_id=" + au.getId() + " and datafile_id in (select id from dvObject where owner_id=" + ds.getId() + " and dtype='DataFile')").executeUpdate();
+        return num_referred;
+    }
+    
+    /**
+     * Finds and returns all the DataFiles that have been referred to users with an 'Approver' role.
+     * Returns them as a TreeMap where the keys are the AuthenticatedUsers that requested access and whose requests have been referred, and the
+     * values are a list of the DataFiles that they have requested access to and that have been referred.
+     * 
+     * @param ds    Dataset
+     * @return      TreeMap of AuthenticatedUser, List of DataFiles in Dataset requested by AuthenticatedUser that have been referred for access
+     */
+    public TreeMap<AuthenticatedUser,List<DataFile>> findDataFilesReferredForRequestAccess(Dataset ds){
+       TreeMap<AuthenticatedUser,List<DataFile>> returnTMap = new TreeMap<>();
+       
+       if(ds == null){
+           return returnTMap;
+       }
+       
+       List<Object[]> results = em.createNativeQuery("select authenticated_user_id, datafile_id from fileaccessrequests where referred_to_approvers = 't' and datafile_id in (select id from dvObject where owner_id= " + ds.getId() + " and dtype='DataFile')").getResultList();
+    
+       if( results != null && !results.isEmpty()){
+            DataFile df = null;
+            AuthenticatedUser au = null;
+            
+            for(Object[] result : results){
+                au = userService.find((Long)result[0]);
+                df = this.findCheapAndEasy((Long)result[1]);
+                
+                if(au != null && df != null){
+                    List<DataFile> referredFiles = returnTMap.get(au);
+                    if (referredFiles == null) {
+                            referredFiles = new ArrayList<>();
+                            returnTMap.put(au, referredFiles);
+                    }
+                    
+                    referredFiles.add(df);
+                }
+            }
+       }
+       
+       return returnTMap;
+       
+    }
+    
+    /**
+     * Sends a REFERFILEACCESS notification to users who in 'Approver' role and a REFERREDFILEACCESS to the user who referred the request.
+     * 
+     * @param dataset   The Dataset for which the access request was referred
+     * @param fileId    The DataFile id for the which the access request was referred
+     * @param referrer  The AuthenticatedUSer that referred the file request
+     * @param approvers The list of AuthenticatedUsers in the 'Approver' role to which the REFERFILEACCESS notification is sent
+     */
+    public void sendFileAccessReferredNotification(Dataset dataset, Long fileId, AuthenticatedUser referrer, List<AuthenticatedUser> approvers) {
+        Timestamp ts = new Timestamp(new Date().getTime());
+        
+        for(AuthenticatedUser approver: approvers){
+            userNotificationService.sendNotification(approver, ts, UserNotification.Type.REFERFILEACCESS, fileId);             
+        }
+        
+        userNotificationService.sendNotification(referrer, ts, UserNotification.Type.REFERREDFILEACCESS, fileId);
+            
+    }
+    
     private List<AuthenticatedUser> retrieveFileAccessRequesters(DataFile fileIn){
         List<AuthenticatedUser> retList = new ArrayList<>();
         

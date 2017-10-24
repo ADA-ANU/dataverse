@@ -91,6 +91,7 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
     private final TreeMap<RoleAssignee,List<RoleAssignmentRow>> roleAssigneeMap = new TreeMap<>();
     private final TreeMap<DataFile,List<RoleAssignmentRow>> fileMap = new TreeMap<>();
     private final TreeMap<AuthenticatedUser,List<DataFile>> fileAccessRequestMap = new TreeMap<>();
+    private final TreeMap<AuthenticatedUser,List<DataFile>> fileAccessReferredMap = new TreeMap<>();
     
     public Dataset getDataset() {
         return dataset;
@@ -112,6 +113,10 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
         return fileAccessRequestMap;
     }
     
+    public TreeMap<AuthenticatedUser, List<DataFile>> getFileAccessReferredMap() {
+        return fileAccessReferredMap;
+    }
+    
     public String init() {
         if (dataset.getId() != null) {
             dataset = datasetService.find(dataset.getId());
@@ -126,6 +131,7 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
             return permissionsWrapper.notAuthorized();
         }
         initMaps();
+        initApprovers();
         return "";
     }
     
@@ -133,7 +139,11 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
         // initialize files and usergroup list
         roleAssigneeMap.clear();
         fileMap.clear();
-        fileAccessRequestMap.clear();        
+        fileAccessRequestMap.clear();
+        fileAccessReferredMap.clear();
+        
+        //don't want to hit the database for each datafile/user combo so call these methods for the dataset
+        fileAccessReferredMap.putAll(datafileService.findDataFilesReferredForRequestAccess(this.dataset));
         
         for (DataFile file : dataset.getFiles()) {
             // only include if the file is restricted (or it's draft version is restricted)
@@ -450,9 +460,109 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
         return true;
     }
     
+    
+    /* refer methods */
+    private List<AuthenticatedUser> approvers;
+    
+    public List<AuthenticatedUser> getApprovers(){
+        return approvers;
+    }
+    
+    public void setApprovers(List<AuthenticatedUser> aus){
+        this.approvers = aus;
+    }
+    
+    private void initApprovers(){
+        java.util.Set<RoleAssignment> ras = roleService.rolesAssignments(this.dataset);
+        
+        if(this.approvers == null){
+            approvers = new ArrayList<AuthenticatedUser>();
+        } else {
+            approvers.clear();
+        }
+        
+        for( RoleAssignment ra : ras ){
+        
+            if( ra.getRole().getAlias().compareToIgnoreCase("approver") == 0 ){ //0 indicates 'equals'
+               
+                String raeeId = ra.getAssigneeIdentifier();
+                RoleAssignee raee = roleAssigneeService.getRoleAssignee(raeeId);
+                List<AuthenticatedUser> aus_approvers = roleAssigneeService.getExplicitUsers(raee);
+                
+                if(aus_approvers != null && !aus_approvers.isEmpty()){
+                    approvers.addAll(aus_approvers); //there might be several groups and/or users 
+                } 
+            }   
+        }
+    }
+    
+    public boolean isAccessRequestReferred(AuthenticatedUser requester){
+        boolean referred = false;
+        
+        if(requester != null){
+            List<DataFile> dfs = fileAccessReferredMap.get(requester);
+            if(dfs != null && !dfs.isEmpty()){
+              referred = true;
+            }
+        }
+        
+        return referred;
+    }    
+    
+    public boolean isAccessRequestReferred(DataFile df, AuthenticatedUser requester){
+        boolean referred = false;
+        
+        if(df != null && requester != null){
+            List<DataFile> dfs = fileAccessReferredMap.get(requester);
+            if(dfs != null && !dfs.isEmpty() && dfs.contains(df)){
+                referred = true;
+            }
+        }
+        
+        return referred;
+    }
+    
+    public void referAccessToRequests(AuthenticatedUser requester){
+        referAccessToRequests(requester,selectedFiles);
+    }
+    
+    public void referAccessToAllRequests(AuthenticatedUser requester){
+        referAccessToRequests(requester, fileAccessRequestMap.get(requester));
+    }
+    
+    private void referAccessToRequests(AuthenticatedUser requester, List<DataFile> files){
+        if(files == null || files.isEmpty()){
+            return; //nothing to do
+        }
+        
+        java.util.ResourceBundle propsBundle = java.util.ResourceBundle.getBundle("Bundle");
+        int numRequestsReferred = this.datafileService.referFileAccessRequestsToApprovers(files, requester);
+        
+        boolean actionPerformed = false;
+        if(numRequestsReferred > 0){
+            initApprovers(); //make sure to get the latest
+        
+            if(this.approvers != null && !this.approvers.isEmpty()){
+                datafileService.sendFileAccessReferredNotification(dataset, files.get(files.size()-1).getId(), (AuthenticatedUser)session.getUser(), this.approvers);
+                actionPerformed = true;
+            }
+        }
+        
+        if (actionPerformed) {
+            String successMsg = java.text.MessageFormat.format(propsBundle.getString("file.referredAccess.successMessage"),requester.getIdentifier());
+            JsfHelper.addSuccessMessage(successMsg);
+        } else {
+            String failedMsg = java.text.MessageFormat.format(propsBundle.getString("file.referredAccess.failedMessage"),requester.getIdentifier());
+            JsfHelper.addErrorMessage(failedMsg);
+        }
+        
+        initMaps(); 
+        this.showUserGroupMessages();
+    }
+
     boolean renderUserGroupMessages = false;
     boolean renderFileMessages = false;
-       
+
     public void showUserGroupMessages() {
         renderUserGroupMessages = true;
         renderFileMessages = false;

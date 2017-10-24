@@ -97,7 +97,17 @@
                                                                        oncomplete="bind_bsui_components();">
                                                             <span class="glyphicon glyphicon-ban-circle"/> #{bundle['dataverse.permissionsFiles.assignDialog.rejectBtn']}
                                                         </p:commandLink>
-                                                       
+                                                        
+                                                        <p:commandLink type="button" styleClass="btn btn-default"
+                                                                       rendered="#{!empty manageFilePermissionsPage.approvers}"
+                                                                       disabled="#{manageFilePermissionsPage.isAccessRequestReferred(access.key)}"
+                                                                       actionListener="#{manageFilePermissionsPage.referAccessToAllRequests(access.key)}"
+                                                                       action="#{manageFilePermissionsPage.showUserGroupMessages}"
+                                                                       update=":#{p:component('userGroupsRequestsContainer')}
+                                                                       :#{p:component('userGroupMessages')} @([id$=Messages])"
+                                                                       oncomplete="bind_bsui_components();">
+                                                            <span class="glyphicon glyphicon-share-alt"/> #{bundle['dataverse.permissionsFiles.assignDialog.referBtn']}
+                                                        </p:commandLink>
                                                     </div>
                                                 </p:column>
                                             </p:dataTable>
@@ -374,7 +384,14 @@
                                     <span class="glyphicon glyphicon-ban-circle"/>
                                     <h:outputText value="#{bundle['dataverse.permissionsFiles.assignDialog.rejectBtn']}"/>
                                 </p:commandLink>
-                                
+                                <p:commandLink type="button" styleClass="btn btn-default"
+                                               rendered="#{!empty manageFilePermissionsPage.approvers and !empty manageFilePermissionsPage.fileRequester}"
+                                               disabled="#{manageFilePermissionsPage.isAccessRequestReferred(manageFilePermissionsPage.fileRequester)}"
+                                               actionListener="#{manageFilePermissionsPage.referAccessToRequests(manageFilePermissionsPage.fileRequester)}"
+                                               update="userGroupsRequestsContainer userGroupMessages @([id$=Messages])"
+                                               oncomplete="PF('assignWidget').hide(); bind_bsui_components();">
+                                    <span class="glyphicon glyphicon-share-alt"/> #{bundle['dataverse.permissionsFiles.assignDialog.referBtn']}
+                                </p:commandLink>
                                 <button type="button" class="btn btn-default" onclick="PF('assignWidget').hide()" value="Cancel">#{bundle.cancel}</button>
                             </div>
                         </p:fragment>
