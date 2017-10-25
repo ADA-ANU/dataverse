@@ -396,17 +396,21 @@ public class FileDownloadServiceBean implements java.io.Serializable {
      */
     private String getGuestbookAppendEmailDetails(GuestbookResponse gb){
         //String gbDetails = java.util.ResourceBundle.getBundle("Bundle").getString("dataverse.permissionsFiles.assignDialog.accessRequestDetails"); //want same heading in email
+        String demarcation = "\n*******************************************";
+        String separator = ": ";
         
-        String gbDetails = "\n";
+        String gbDetails = demarcation;
         
+        java.util.ResourceBundle propsBundle = java.util.ResourceBundle.getBundle("Bundle");
+        gbDetails = gbDetails.concat(propsBundle.getString("dataverse.permissionsFiles.assignDialog.accessRequestDetails").toUpperCase()); //want same heading in email
         gbDetails = gbDetails.concat("\n"); 
-        gbDetails = gbDetails.concat(gb.getName().trim());
+        gbDetails = gbDetails.concat(propsBundle.getString("name")).concat(separator).concat(gb.getName().trim());
         gbDetails = gbDetails.concat("\n");
-        gbDetails = gbDetails.concat(gb.getEmail().trim());
+        gbDetails = gbDetails.concat(propsBundle.getString("email")).concat(separator).concat(gb.getEmail().trim());
         gbDetails = gbDetails.concat("\n");
-        gbDetails = gbDetails.concat(gb.getInstitution().trim());
+        gbDetails = gbDetails.concat(propsBundle.getString("institution")).concat(separator).concat(gb.getInstitution().trim());
         gbDetails = gbDetails.concat("\n");
-        gbDetails = gbDetails.concat(gb.getPosition().trim());
+        gbDetails = gbDetails.concat(propsBundle.getString("position")).concat(separator).concat(gb.getPosition().trim());
         gbDetails = gbDetails.concat("\n");
         
         List<CustomQuestionResponse> cqrs = gb.getCustomQuestionResponses();
@@ -415,6 +419,7 @@ public class FileDownloadServiceBean implements java.io.Serializable {
             gbDetails = gbDetails.concat(cqr.getCustomQuestion().getQuestionString().trim()).concat(": ").concat(cqr.getResponse().trim()).concat("\n");
         }
         
+        gbDetails = gbDetails.concat(demarcation);
         return gbDetails;
     }
     
