@@ -395,22 +395,24 @@ public class FileDownloadServiceBean implements java.io.Serializable {
      * @return String The text that will be appended to the email
      */
     private String getGuestbookAppendEmailDetails(GuestbookResponse gb){
-        String gbDetails = java.util.ResourceBundle.getBundle("Bundle").getString("dataverse.permissionsFiles.assignDialog.accessRequestDetails"); //want same heading in email
+        //String gbDetails = java.util.ResourceBundle.getBundle("Bundle").getString("dataverse.permissionsFiles.assignDialog.accessRequestDetails"); //want same heading in email
         
-        gbDetails = gbDetails.concat("\n\n"); 
+        String gbDetails = "\n";
+        
+        gbDetails = gbDetails.concat("\n"); 
         gbDetails = gbDetails.concat(gb.getName().trim());
-        gbDetails = gbDetails.concat("\n\n");
+        gbDetails = gbDetails.concat("\n");
         gbDetails = gbDetails.concat(gb.getEmail().trim());
-        gbDetails = gbDetails.concat("\n\n");
+        gbDetails = gbDetails.concat("\n");
         gbDetails = gbDetails.concat(gb.getInstitution().trim());
-        gbDetails = gbDetails.concat("\n\n");
+        gbDetails = gbDetails.concat("\n");
         gbDetails = gbDetails.concat(gb.getPosition().trim());
-        gbDetails = gbDetails.concat("\n\n");
+        gbDetails = gbDetails.concat("\n");
         
         List<CustomQuestionResponse> cqrs = gb.getCustomQuestionResponses();
         
         for(CustomQuestionResponse cqr: cqrs){
-            gbDetails = gbDetails.concat(cqr.getCustomQuestion().getQuestionString().trim()).concat(": ").concat(cqr.getResponse().trim()).concat("\n\n");
+            gbDetails = gbDetails.concat(cqr.getCustomQuestion().getQuestionString().trim()).concat(": ").concat(cqr.getResponse().trim()).concat("\n");
         }
         
         return gbDetails;
