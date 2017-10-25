@@ -396,14 +396,14 @@ public class FileDownloadServiceBean implements java.io.Serializable {
      */
     private String getGuestbookAppendEmailDetails(GuestbookResponse gb){
         //String gbDetails = java.util.ResourceBundle.getBundle("Bundle").getString("dataverse.permissionsFiles.assignDialog.accessRequestDetails"); //want same heading in email
-        String demarcation = "\n*******************************************\n\n";
+        String demarcation = "\n\n\n*******************************************\n\n";
         String separator = ": ";
         
         String gbDetails = demarcation;
         
         java.util.ResourceBundle propsBundle = java.util.ResourceBundle.getBundle("Bundle");
         gbDetails = gbDetails.concat(propsBundle.getString("dataverse.permissionsFiles.assignDialog.accessRequestDetails").toUpperCase()); //want same heading in email
-        gbDetails = gbDetails.concat("\n"); 
+        gbDetails = gbDetails.concat(":\n\n"); 
         gbDetails = gbDetails.concat(propsBundle.getString("name")).concat(separator).concat(gb.getName().trim());
         gbDetails = gbDetails.concat("\n");
         gbDetails = gbDetails.concat(propsBundle.getString("email")).concat(separator).concat(gb.getEmail().trim());
@@ -411,12 +411,12 @@ public class FileDownloadServiceBean implements java.io.Serializable {
         gbDetails = gbDetails.concat(propsBundle.getString("institution")).concat(separator).concat(gb.getInstitution().trim());
         gbDetails = gbDetails.concat("\n");
         gbDetails = gbDetails.concat(propsBundle.getString("position")).concat(separator).concat(gb.getPosition().trim());
-        gbDetails = gbDetails.concat("\n\n");
+        gbDetails = gbDetails.concat("\n");
         
         List<CustomQuestionResponse> cqrsList = gb.getCustomQuestionResponses();
         
         if(cqrsList != null && !cqrsList.isEmpty()){
-            gbDetails = gbDetails.concat(propsBundle.getString("dataset.manageGuestbooks.guestbook.customQuestions")).concat(":\n\n");
+            gbDetails = gbDetails.concat("\n\n").concat(propsBundle.getString("dataset.manageGuestbooks.guestbook.customQuestions")).concat(":\n\n");
             
             for(CustomQuestionResponse cqr: cqrsList){
                 gbDetails = gbDetails.concat(cqr.getCustomQuestion().getQuestionString().trim()).concat(": ").concat(cqr.getResponse().trim()).concat("\n\n");
