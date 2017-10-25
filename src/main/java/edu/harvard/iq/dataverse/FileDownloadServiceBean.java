@@ -395,11 +395,13 @@ public class FileDownloadServiceBean implements java.io.Serializable {
      * @return String The text that will be appended to the email
      */
     private String getGuestbookAppendEmailDetails(GuestbookResponse gb){
-        //String gbDetails = java.util.ResourceBundle.getBundle("Bundle").getString("dataverse.permissionsFiles.assignDialog.accessRequestDetails"); //want same heading in email
-        String demarcation = "\n\n\n*******************************************\n\n";
+        
+        String demarcation = "*******************************************";
+        String startDemarcation = "\n\n\n".concat(demarcation).concat("\n\n");
+        
         String separator = ": ";
         
-        String gbDetails = demarcation;
+        String gbDetails = startDemarcation;
         
         java.util.ResourceBundle propsBundle = java.util.ResourceBundle.getBundle("Bundle");
         gbDetails = gbDetails.concat(propsBundle.getString("dataverse.permissionsFiles.assignDialog.accessRequestDetails").toUpperCase()); //want same heading in email
