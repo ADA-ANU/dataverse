@@ -199,6 +199,30 @@ public class MailServiceBean implements java.io.Serializable {
         }
         return retval;
     }
+    
+    public Boolean sendNotificationEmail(UserNotification notification, String msgTextToAppend){        
+        boolean retval = false;
+        String emailAddress = getUserEmailAddress(notification);
+        if (emailAddress != null){
+           Object objectOfNotification =  getObjectOfNotification(notification);
+           if (objectOfNotification != null){
+               String messageText = getMessageTextBasedOnNotification(notification, objectOfNotification);
+               String subjectText = getSubjectTextBasedOnNotification(notification);              
+               if (!(messageText.isEmpty() || subjectText.isEmpty())){
+                    messageText = messageText.concat(msgTextToAppend);
+                    retval = sendSystemEmail(emailAddress, subjectText, messageText); 
+               } else {
+                   logger.warning("Skipping " + notification.getType() +  " notification, because couldn't get valid message");
+               }
+           } else { 
+               logger.warning("Skipping " + notification.getType() +  " notification, because no valid Object was found");
+           }           
+        } else {
+            logger.warning("Skipping " + notification.getType() +  " notification, because email address is null");
+        }
+        return retval;
+    }
+    
         
     private String getSubjectTextBasedOnNotification(UserNotification userNotification) {
         switch (userNotification.getType()) {

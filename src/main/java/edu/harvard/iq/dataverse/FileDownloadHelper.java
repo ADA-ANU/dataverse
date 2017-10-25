@@ -199,7 +199,7 @@ public class FileDownloadHelper implements java.io.Serializable {
     }    
     
     public void requestAccessWithGuestbook(GuestbookResponse guestbookResponse){
-        
+        //NEED A FLAG SOMEWHERE TO SET SENDGBRDETAILSINREQUESTEMAIL = TRUE/FALSE
         Dataset ds = null;
         java.sql.Timestamp responseTime = new Timestamp(new Date().getTime()); //want all of them to have the same response date
         String downloadType = "Request Access " + responseTime;
@@ -209,7 +209,7 @@ public class FileDownloadHelper implements java.io.Serializable {
             fileDownloadService.writeGuestbookResponseRecord(guestbookResponse);
         
             if( fileDownloadService.requestAccess(guestbookResponse.getDataFile().getId()) ){
-                fileDownloadService.sendRequestFileAccessNotification(guestbookResponse.getDataFile().getOwner(), guestbookResponse.getDataFile().getId());     
+                fileDownloadService.sendRequestFileAccessNotification(guestbookResponse.getDataFile().getOwner(), guestbookResponse.getDataFile().getId(),guestbookResponse);      
             }
         }
         
@@ -234,7 +234,7 @@ public class FileDownloadHelper implements java.io.Serializable {
             }
             
             if(lastFileId != null){
-                fileDownloadService.sendRequestFileAccessNotification(df.getOwner(), lastFileId);
+                fileDownloadService.sendRequestFileAccessNotification(df.getOwner(), lastFileId, guestbookResponse);
             }
         }
     }

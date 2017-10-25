@@ -55,6 +55,8 @@ public class FileDownloadServiceBean implements java.io.Serializable {
     DataverseServiceBean dataverseService;
     @EJB
     UserNotificationServiceBean userNotificationService;
+    @EJB
+    MailServiceBean mailService;
     
     @Inject
     DataverseSession session;
@@ -362,5 +364,57 @@ public class FileDownloadServiceBean implements java.io.Serializable {
 
         userNotificationService.sendNotification((AuthenticatedUser) session.getUser(), ts, UserNotification.Type.REQUESTEDFILEACCESS, fileId);
     }    
+    
+    public void sendRequestFileAccessNotification(Dataset dataset, Long fileId, GuestbookResponse gb){
+        Timestamp ts = new Timestamp(new Date().getTime()); 
+        UserNotification un = null;
+        String appendMsgText = this.getGuestbookAppendEmailDetails(gb);
+                
+        List<AuthenticatedUser> mngDsPermUsers = permissionService.getUsersWithPermissionOn(Permission.ManageDatasetPermissions, dataset);
+        
+        for (AuthenticatedUser au : mngDsPermUsers){
+            un = userNotificationService.sendUserNotification(au, ts, UserNotification.Type.REQUESTFILEACCESS, fileId);
+            
+            if(un != null){
+                
+               boolean mailed = mailService.sendNotificationEmail(un, appendMsgText);
+               if(mailed){
+                   un.setEmailed(true);
+                   userNotificationService.save(un);
+               }    
+            }
+        }
+
+        userNotificationService.sendNotification((AuthenticatedUser) session.getUser(), ts, UserNotification.Type.REQUESTEDFILEACCESS, fileId);
+    }    
+        
+    /**
+     * A helper function to create the text for the GuestbookResponse.
+     * This text will be appended to the email that is sent to the users.
+     * @param gb The GuestbookResponse whose details will be extracted and formatted into text to append.
+     * @return String The text that will be appended to the email
+     */
+    private String getGuestbookAppendEmailDetails(GuestbookResponse gb){
+        String gbDetails = java.util.ResourceBundle.getBundle("Bundle").getString("dataverse.permissionsFiles.assignDialog.accessRequestDetails"); //want same heading in email
+        
+        gbDetails = gbDetails.concat("\n\n"); 
+        gbDetails = gbDetails.concat(gb.getName().trim());
+        gbDetails = gbDetails.concat("\n\n");
+        gbDetails = gbDetails.concat(gb.getEmail().trim());
+        gbDetails = gbDetails.concat("\n\n");
+        gbDetails = gbDetails.concat(gb.getInstitution().trim());
+        gbDetails = gbDetails.concat("\n\n");
+        gbDetails = gbDetails.concat(gb.getPosition().trim());
+        gbDetails = gbDetails.concat("\n\n");
+        
+        List<CustomQuestionResponse> cqrs = gb.getCustomQuestionResponses();
+        
+        for(CustomQuestionResponse cqr: cqrs){
+            gbDetails = gbDetails.concat(cqr.getCustomQuestion().getQuestionString().trim()).concat(": ").concat(cqr.getResponse().trim()).concat("\n\n");
+        }
+        
+        return gbDetails;
+    }
+    
     
 }
