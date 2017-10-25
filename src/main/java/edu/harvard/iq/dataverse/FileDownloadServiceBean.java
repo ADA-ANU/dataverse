@@ -396,7 +396,7 @@ public class FileDownloadServiceBean implements java.io.Serializable {
      */
     private String getGuestbookAppendEmailDetails(GuestbookResponse gb){
         //String gbDetails = java.util.ResourceBundle.getBundle("Bundle").getString("dataverse.permissionsFiles.assignDialog.accessRequestDetails"); //want same heading in email
-        String demarcation = "\n*******************************************";
+        String demarcation = "\n*******************************************\n\n";
         String separator = ": ";
         
         String gbDetails = demarcation;
@@ -411,12 +411,17 @@ public class FileDownloadServiceBean implements java.io.Serializable {
         gbDetails = gbDetails.concat(propsBundle.getString("institution")).concat(separator).concat(gb.getInstitution().trim());
         gbDetails = gbDetails.concat("\n");
         gbDetails = gbDetails.concat(propsBundle.getString("position")).concat(separator).concat(gb.getPosition().trim());
-        gbDetails = gbDetails.concat("\n");
+        gbDetails = gbDetails.concat("\n\n");
         
-        List<CustomQuestionResponse> cqrs = gb.getCustomQuestionResponses();
+        List<CustomQuestionResponse> cqrsList = gb.getCustomQuestionResponses();
         
-        for(CustomQuestionResponse cqr: cqrs){
-            gbDetails = gbDetails.concat(cqr.getCustomQuestion().getQuestionString().trim()).concat(": ").concat(cqr.getResponse().trim()).concat("\n");
+        if(cqrsList != null && !cqrsList.isEmpty()){
+            gbDetails = gbDetails.concat(propsBundle.getString("dataset.manageGuestbooks.guestbook.customQuestions")).concat(":\n\n");
+            
+            for(CustomQuestionResponse cqr: cqrsList){
+                gbDetails = gbDetails.concat(cqr.getCustomQuestion().getQuestionString().trim()).concat(": ").concat(cqr.getResponse().trim()).concat("\n\n");
+            }
+          
         }
         
         gbDetails = gbDetails.concat(demarcation);
