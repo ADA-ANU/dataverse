@@ -427,12 +427,12 @@ public class FileDownloadServiceBean implements java.io.Serializable {
                 questionText = cqr.getCustomQuestion().getQuestionString();
                 if(questionText != null)
                     {questionText = questionText.trim();}
-                else {questionText = "";}
+                else {questionText = "-----";}
                 
                 questionAnswer = cqr.getResponse();
                 if(questionAnswer != null)
                     {questionAnswer = questionAnswer.trim();}
-                else{ questionAnswer = "";}
+                else{ questionAnswer = "-----";}
                 
                 gbDetails = gbDetails.concat(questionText).concat(": ").concat(questionAnswer).concat("\n\n");
                 
