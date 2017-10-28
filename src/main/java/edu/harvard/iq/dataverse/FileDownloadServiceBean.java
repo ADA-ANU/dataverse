@@ -420,8 +420,24 @@ public class FileDownloadServiceBean implements java.io.Serializable {
         if(cqrsList != null && !cqrsList.isEmpty()){
             gbDetails = gbDetails.concat("\n\n").concat(propsBundle.getString("dataset.manageGuestbooks.guestbook.customQuestions")).concat(":\n\n");
             
+            String questionText = null;
+            String questionAnswer = null;
+            
             for(CustomQuestionResponse cqr: cqrsList){
-                gbDetails = gbDetails.concat(cqr.getCustomQuestion().getQuestionString().trim()).concat(": ").concat(cqr.getResponse().trim()).concat("\n\n");
+                questionText = cqr.getCustomQuestion().getQuestionString();
+                if(questionText != null)
+                    {questionText = questionText.trim();}
+                else {questionText = "";}
+                
+                questionAnswer = cqr.getResponse();
+                if(questionAnswer != null)
+                    {questionAnswer = questionAnswer.trim();}
+                else{ questionAnswer = "";}
+                
+                gbDetails = gbDetails.concat(questionText).concat(": ").concat(questionAnswer).concat("\n\n");
+                
+                questionText = null;
+                questionAnswer = null;
             }
           
         }
