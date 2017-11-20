@@ -234,7 +234,7 @@ public class MailServiceBean implements java.io.Serializable {
                 return ResourceBundle.getBundle("Bundle").getString("notification.email.create.dataverse.subject");
             case REQUESTFILEACCESS:
                 String requesterUsername = userNotification.getUser().getIdentifier();
-                DvObject dvObj = (DvObject)userNotification.getTheObject();
+                DvObject dvObj = (DvObject)getObjectOfNotification(userNotification);
                 String datasetName = dvObj.getDisplayName();
 
                 String pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.request.file.access.subject");
