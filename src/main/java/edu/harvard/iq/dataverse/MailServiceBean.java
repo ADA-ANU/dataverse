@@ -261,7 +261,7 @@ public class MailServiceBean implements java.io.Serializable {
                 
                 return subjectText;
             case GRANTFILEACCESS:
-                dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
+                dvObjName = dvObj.getDisplayName(); //get the dataset's name, not the file name - use getOwner
                 
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.grant.file.access.subject");
                 String[] paramArrayGrantFileAccess = {dvObjName};
@@ -269,7 +269,7 @@ public class MailServiceBean implements java.io.Serializable {
                 
                 return subjectText;
             case REJECTFILEACCESS:
-                dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
+                dvObjName = dvObj.getDisplayName();
                 
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.rejected.file.access.subject");
                 String[] paramArrayRejectFileAccess = {dvObjName};
