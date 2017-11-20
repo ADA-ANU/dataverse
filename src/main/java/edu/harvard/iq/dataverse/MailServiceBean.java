@@ -225,43 +225,107 @@ public class MailServiceBean implements java.io.Serializable {
     
         
     private String getSubjectTextBasedOnNotification(UserNotification userNotification) {
+        DvObject dvObj = (DvObject)getObjectOfNotification(userNotification);
+        String dvObjName = null;
+        String pattern = null;
+        String subjectText = null;
+        
         switch (userNotification.getType()) {
             case ASSIGNROLE:
                 return ResourceBundle.getBundle("Bundle").getString("notification.email.assign.role.subject");
             case REVOKEROLE:
                 return ResourceBundle.getBundle("Bundle").getString("notification.email.revoke.role.subject");
             case CREATEDV:
-                return ResourceBundle.getBundle("Bundle").getString("notification.email.create.dataverse.subject");
+                dvObjName = dvObj.getDisplayName();
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.create.dataverse.subject");
+                String[] paramArrayCreateDV = {dvObjName};
+                subjectText = MessageFormat.format(pattern, paramArrayCreateDV);
+                
+                return subjectText;
             case REQUESTFILEACCESS:
+                String requesterFullName = userNotification.getUser().getName();
                 String requesterUsername = userNotification.getUser().getIdentifier();
-                DvObject dvObj = (DvObject)getObjectOfNotification(userNotification);
-                String datasetName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
+                dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
 
-                String pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.request.file.access.subject");
-                String[] paramArray = {requesterUsername, datasetName};
-                String subjectText = MessageFormat.format(pattern, paramArray);
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.request.file.access.subject");
+                String[] paramArrayRequestFileAccess = {requesterFullName, requesterUsername, dvObjName};
+                subjectText = MessageFormat.format(pattern, paramArrayRequestFileAccess);
                 
                 return subjectText;
             case REQUESTEDFILEACCESS:
-                return ResourceBundle.getBundle("Bundle").getString("notification.email.requested.file.access.subject");
+                dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
+                
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.requested.file.access.subject");
+                String[] paramArrayRequestedFileAccess = {dvObjName};
+                subjectText = MessageFormat.format(pattern, paramArrayRequestedFileAccess);
+                
+                return subjectText;
             case GRANTFILEACCESS:
-                return ResourceBundle.getBundle("Bundle").getString("notification.email.grant.file.access.subject");
+                dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
+                
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.grant.file.access.subject");
+                String[] paramArrayGrantFileAccess = {dvObjName};
+                subjectText = MessageFormat.format(pattern, paramArrayGrantFileAccess);
+                
+                return subjectText;
             case REJECTFILEACCESS:
-                return ResourceBundle.getBundle("Bundle").getString("notification.email.rejected.file.access.subject");
+                dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
+                
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.rejected.file.access.subject");
+                String[] paramArrayRejectFileAccess = {dvObjName};
+                subjectText = MessageFormat.format(pattern, paramArrayRejectFileAccess);
+                
+                return subjectText;
             case REFERFILEACCESS:
-                return ResourceBundle.getBundle("Bundle").getString("notification.email.refer.file.access.subject");
+                dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
+                
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.refer.file.access.subject");
+                String[] paramArrayReferFileAccess = {dvObjName};
+                subjectText = MessageFormat.format(pattern, paramArrayReferFileAccess);
+                
+                return subjectText;
             case REFERREDFILEACCESS:
-                return ResourceBundle.getBundle("Bundle").getString("notification.email.referred.file.access.subject");
+                dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
+                
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.referred.file.access.subject");
+                String[] paramArrayReferredFileAccess = {dvObjName};
+                subjectText = MessageFormat.format(pattern, paramArrayReferredFileAccess);
+                
+                return subjectText;
             case MAPLAYERUPDATED:
                 return ResourceBundle.getBundle("Bundle").getString("notification.email.update.maplayer");
             case CREATEDS:
-                return ResourceBundle.getBundle("Bundle").getString("notification.email.create.dataset.subject");
+                dvObjName = dvObj.getDisplayName();
+                
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.create.dataset.subject");
+                String[] paramArrayCreateDS = {dvObjName};
+                subjectText = MessageFormat.format(pattern, paramArrayCreateDS);
+                
+                return subjectText;
             case SUBMITTEDDS:
-                return ResourceBundle.getBundle("Bundle").getString("notification.email.submit.dataset.subject");
+                dvObjName = dvObj.getDisplayName();
+                
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.submit.dataset.subject");
+                String[] paramArraySubmittedDS = {dvObjName};
+                subjectText = MessageFormat.format(pattern, paramArraySubmittedDS);
+                
+                return subjectText;
             case PUBLISHEDDS:
-                return ResourceBundle.getBundle("Bundle").getString("notification.email.publish.dataset.subject");
+                dvObjName = dvObj.getDisplayName();
+                
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.publish.dataset.subject");
+                String[] paramArrayPublishedDS = {dvObjName};
+                subjectText = MessageFormat.format(pattern, paramArrayPublishedDS);
+                
+                return subjectText;
             case RETURNEDDS:
-                return ResourceBundle.getBundle("Bundle").getString("notification.email.returned.dataset.subject");
+                dvObjName = dvObj.getDisplayName();
+                
+                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.returned.dataset.subject");
+                String[] paramArrayReturnedDS = {dvObjName};
+                subjectText = MessageFormat.format(pattern, paramArrayReturnedDS);
+                
+                return subjectText;
             case CREATEACC:
                 return ResourceBundle.getBundle("Bundle").getString("notification.email.create.account.subject");
             case CHECKSUMFAIL:
