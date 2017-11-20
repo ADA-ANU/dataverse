@@ -235,7 +235,7 @@ public class MailServiceBean implements java.io.Serializable {
             case REQUESTFILEACCESS:
                 String requesterUsername = userNotification.getUser().getIdentifier();
                 DvObject dvObj = (DvObject)getObjectOfNotification(userNotification);
-                String datasetName = dvObj.getDisplayName();
+                String datasetName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
 
                 String pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.request.file.access.subject");
                 String[] paramArray = {requesterUsername, datasetName};
