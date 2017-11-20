@@ -225,7 +225,9 @@ public class MailServiceBean implements java.io.Serializable {
     
         
     private String getSubjectTextBasedOnNotification(UserNotification userNotification) {
-        DvObject dvObj = (DvObject)getObjectOfNotification(userNotification);
+        //DvObject dvObj = (DvObject)getObjectOfNotification(userNotification);
+        DvObject dvObj = null;
+        Object objOfNotif = getObjectOfNotification(userNotification);
         String dvObjName = null;
         String pattern = null;
         String subjectText = null;
@@ -236,6 +238,7 @@ public class MailServiceBean implements java.io.Serializable {
             case REVOKEROLE:
                 return ResourceBundle.getBundle("Bundle").getString("notification.email.revoke.role.subject");
             case CREATEDV:
+                dvObj = (DvObject)objOfNotif;
                 dvObjName = dvObj.getDisplayName();
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.create.dataverse.subject");
                 String[] paramArrayCreateDV = {dvObjName};
@@ -245,6 +248,7 @@ public class MailServiceBean implements java.io.Serializable {
             case REQUESTFILEACCESS:
                 String requesterFullName = userNotification.getUser().getName();
                 String requesterUsername = userNotification.getUser().getIdentifier();
+                dvObj = (DvObject)objOfNotif;
                 dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
 
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.request.file.access.subject");
@@ -253,6 +257,7 @@ public class MailServiceBean implements java.io.Serializable {
                 
                 return subjectText;
             case REQUESTEDFILEACCESS:
+                dvObj = (DvObject)objOfNotif;
                 dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
                 
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.requested.file.access.subject");
@@ -261,6 +266,7 @@ public class MailServiceBean implements java.io.Serializable {
                 
                 return subjectText;
             case GRANTFILEACCESS:
+                dvObj = (DvObject)objOfNotif;
                 dvObjName = dvObj.getDisplayName(); //get the dataset's name, not the file name - use getOwner
                 
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.grant.file.access.subject");
@@ -269,6 +275,7 @@ public class MailServiceBean implements java.io.Serializable {
                 
                 return subjectText;
             case REJECTFILEACCESS:
+                dvObj = (DvObject)objOfNotif;
                 dvObjName = dvObj.getDisplayName();
                 
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.rejected.file.access.subject");
@@ -277,6 +284,7 @@ public class MailServiceBean implements java.io.Serializable {
                 
                 return subjectText;
             case REFERFILEACCESS:
+                dvObj = (DvObject)objOfNotif;
                 dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
                 
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.refer.file.access.subject");
@@ -285,6 +293,7 @@ public class MailServiceBean implements java.io.Serializable {
                 
                 return subjectText;
             case REFERREDFILEACCESS:
+                dvObj = (DvObject)objOfNotif;
                 dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
                 
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.referred.file.access.subject");
@@ -295,14 +304,16 @@ public class MailServiceBean implements java.io.Serializable {
             case MAPLAYERUPDATED:
                 return ResourceBundle.getBundle("Bundle").getString("notification.email.update.maplayer");
             case CREATEDS:
-                dvObjName = dvObj.getDisplayName();
+                DatasetVersion version =  (DatasetVersion)objOfNotif;
                 
+                dvObjName = version.getDataset().getDisplayName();
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.create.dataset.subject");
                 String[] paramArrayCreateDS = {dvObjName};
                 subjectText = MessageFormat.format(pattern, paramArrayCreateDS);
                 
                 return subjectText;
             case SUBMITTEDDS:
+                dvObj = (DvObject)objOfNotif;
                 dvObjName = dvObj.getDisplayName();
                 
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.submit.dataset.subject");
@@ -311,6 +322,7 @@ public class MailServiceBean implements java.io.Serializable {
                 
                 return subjectText;
             case PUBLISHEDDS:
+                dvObj = (DvObject)objOfNotif;
                 dvObjName = dvObj.getDisplayName();
                 
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.publish.dataset.subject");
@@ -319,6 +331,7 @@ public class MailServiceBean implements java.io.Serializable {
                 
                 return subjectText;
             case RETURNEDDS:
+                dvObj = (DvObject)objOfNotif;
                 dvObjName = dvObj.getDisplayName();
                 
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.returned.dataset.subject");
