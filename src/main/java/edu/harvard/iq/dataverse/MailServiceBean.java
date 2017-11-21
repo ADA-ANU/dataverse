@@ -723,5 +723,4 @@ public class MailServiceBean implements java.io.Serializable {
         return null; 
     }
 
-    private String getEmailEnding()
 }
