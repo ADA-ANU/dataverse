@@ -1186,12 +1186,12 @@ public class FileUtil implements java.io.Serializable  {
         // Each of these conditions is sufficient reason to have to 
         // present the user with the popup: 
         if (datasetVersion == null) {
-            logger.fine("Download popup required because datasetVersion is null.");
+            logger.info("Download popup required because datasetVersion is null.");
             return false;
         }
         //0. if version is draft then Popup "not required"
         if (!datasetVersion.isReleased()) {
-            logger.fine("Download popup required because datasetVersion has not been released.");
+            logger.info("Download popup required because datasetVersion has not been released.");
             return false;
         }
         // 1. License and Terms of Use:
@@ -1199,24 +1199,24 @@ public class FileUtil implements java.io.Serializable  {
             if (!TermsOfUseAndAccess.License.CC0.equals(datasetVersion.getTermsOfUseAndAccess().getLicense())
                     && !(datasetVersion.getTermsOfUseAndAccess().getTermsOfUse() == null
                     || datasetVersion.getTermsOfUseAndAccess().getTermsOfUse().equals(""))) {
-                logger.fine("Download popup required because of license or terms of use.");
+                logger.info("Download popup required because of license or terms of use.");
                 return true;
             }
 
             // 2. Terms of Access:
             if (!(datasetVersion.getTermsOfUseAndAccess().getTermsOfAccess() == null) && !datasetVersion.getTermsOfUseAndAccess().getTermsOfAccess().equals("")) {
-                logger.fine("Download popup required because of terms of access.");
+                logger.info("Download popup required because of terms of access.");
                 return true;
             }
         }
 
         // 3. Guest Book:
         if (datasetVersion.getDataset() != null && datasetVersion.getDataset().getGuestbook() != null && datasetVersion.getDataset().getGuestbook().isEnabled() && datasetVersion.getDataset().getGuestbook().getDataverse() != null) {
-            logger.fine("Download popup required because of guestbook.");
+            logger.info("Download popup required because of guestbook.");
             return true;
         }
 
-        logger.fine("Download popup is not required.");
+        logger.info("Download popup is not required.");
         return false;
     }
 

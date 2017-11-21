@@ -105,10 +105,13 @@ public class FileDownloadHelper implements java.io.Serializable {
         // --------------------------------------------------------------------
         if (!isRestrictedFile){
             // Yes, save answer and return true
+            System.out.println("FileDownloadHelper not Restricted File");
             this.fileDownloadPermissionMap.put(fid, true);
             return true;
         }
         
+        System.out.println("FileDownloadHelper Restricted File");
+                 
         // --------------------------------------------------------------------
         // Conditions (2) through (4) are for Restricted files
         // --------------------------------------------------------------------
