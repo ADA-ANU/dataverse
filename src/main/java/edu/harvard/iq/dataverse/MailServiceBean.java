@@ -468,6 +468,9 @@ public class MailServiceBean implements java.io.Serializable {
                         
                     }                   
                 }
+                else{
+                    messageText = messageText.concat(bundle.getString("notification.email.closing"));
+                }
                 
                 return messageText;
             case REVOKEROLE:
