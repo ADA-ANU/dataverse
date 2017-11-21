@@ -112,20 +112,20 @@
         </div>
 
 
-        <p:commandLink rendered="#{ fileDownloadHelper.canDownloadFile(fileMetadata) and !(fileMetadata.dataFile.tabularData) and (!(fileMetada.restricted) or !(downloadPopupRequired)) }"
+        <p:commandLink rendered="#{ fileDownloadHelper.canDownloadFile(fileMetadata) and !(fileMetadata.dataFile.tabularData) and !(downloadPopupRequired) }"
                        type="button" styleClass="btn btn-default"
                        actionListener="#{fileDownloadService.startFileDownload(guestbookResponse, fileMetadata, 'Download')}">
             <!-- non-tabular data file: -->
             <!-- no guest book/terms of use/etc. - straight to the download API url: -->
-            <span class="glyphicon glyphicon-download-alt"/> #{bundle.download} UNRESTRICTED
+            <span class="glyphicon glyphicon-download-alt"/> #{bundle.download}
         </p:commandLink>
         
-        <p:commandLink rendered="#{ fileDownloadHelper.canDownloadFile(fileMetadata) and !(fileMetadata.dataFile.tabularData) and (fileMetadata.restricted and downloadPopupRequired) }"
+        <p:commandLink rendered="#{ fileDownloadHelper.canDownloadFile(fileMetadata) and !(fileMetadata.dataFile.tabularData) and downloadPopupRequired }"
                        type="button" styleClass="btn btn-default"
                        action="#{guestbookResponseService.modifyDatafile(guestbookResponse, fileMetadata)}"
                        update="@widgetVar(downloadPopup)" oncomplete="PF('downloadPopup').show();handleResizeDialog('downloadPopup');">
             <!-- guest book or terms of use, etc. enabled - open "download popup" first: -->
-            <span class="glyphicon glyphicon-download-alt"/> #{bundle.download} RESTRICTED
+            <span class="glyphicon glyphicon-download-alt"/> #{bundle.download}
         </p:commandLink>
         
         
