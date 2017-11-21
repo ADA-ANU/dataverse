@@ -465,8 +465,7 @@ public class MailServiceBean implements java.io.Serializable {
                          String[]  paramArrayAssignRoleDV = {" "};
                         messageText += MessageFormat.format(pattern, paramArrayAssignRoleDV);
                         messageText = messageText.concat(bundle.getString("notification.email.closing"));
-                        pattern = bundle.getString("notification.email.closing.onbehalf").replace("{0}", "");
-                        messageText = messageText.concat(pattern);
+                        
                     }                   
                 }
                 
