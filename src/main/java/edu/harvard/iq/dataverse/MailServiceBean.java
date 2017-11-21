@@ -102,7 +102,10 @@ public class MailServiceBean implements java.io.Serializable {
 
     public boolean sendSystemEmail(String to, String subject, String messageText) {
         boolean sent = false;
-        String body = messageText + ResourceBundle.getBundle("Bundle").getString("notification.email.closing");
+        
+        //need to add correct closing in calling methods, NOT here, as ending may vary for different calls
+        //String body = messageText + ResourceBundle.getBundle("Bundle").getString("notification.email.closing");
+        String body = messageText;
         logger.fine("Sending email to " + to + ". Subject: <<<" + subject + ">>>. Body: " + body);
         try {
              Message msg = new MimeMessage(session);
@@ -209,7 +212,6 @@ public class MailServiceBean implements java.io.Serializable {
                String messageText = getMessageTextBasedOnNotification(notification, objectOfNotification);
                String subjectText = getSubjectTextBasedOnNotification(notification);              
                if (!(messageText.isEmpty() || subjectText.isEmpty())){
-                    messageText = messageText.concat(msgTextToAppend);
                     retval = sendSystemEmail(emailAddress, subjectText, messageText); 
                } else {
                    logger.warning("Skipping " + notification.getType() +  " notification, because couldn't get valid message");
@@ -350,8 +352,8 @@ public class MailServiceBean implements java.io.Serializable {
         }
         return "";
     }
-    
-    private String getDatasetManageFileAccessLink(DataFile datafile){
+       
+   private String getDatasetManageFileAccessLink(DataFile datafile){
         return  systemConfig.getDataverseSiteUrl() + "/permissions-manage-files.xhtml?id=" + datafile.getOwner().getId();
     } 
     
@@ -434,7 +436,8 @@ public class MailServiceBean implements java.io.Serializable {
         String dvObjURL = null;
         String dvObjTypeStr = null;
         String pattern ="";
-
+        
+        ResourceBundle bundle = ResourceBundle.getBundle("Bundle");
         switch (userNotification.getType()) {
             case ASSIGNROLE:
                 AuthenticatedUser au = userNotification.getUser();
@@ -445,21 +448,28 @@ public class MailServiceBean implements java.io.Serializable {
                 dvObjURL = getDvObjectLink(dvObj);
                 dvObjTypeStr = getDvObjectTypeString(dvObj);
 
-                pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.assignRole");
+                pattern = bundle.getString("notification.email.assignRole");
                 String[] paramArrayAssignRole = {joinedRoleNames, dvObjTypeStr, dvObj.getDisplayName(), dvObjURL};
                 messageText += MessageFormat.format(pattern, paramArrayAssignRole);
+                
                 if (joinedRoleNames.contains("File Downloader")){
                     if (dvObjTypeStr.equals("dataset")){
-                         pattern = ResourceBundle.getBundle("Bundle").getString("notification.access.granted.fileDownloader.additionalDataset");
+                         pattern = bundle.getString("notification.access.granted.fileDownloader.additionalDataset");
                          String[]  paramArrayAssignRoleDS = {" "};
-                        messageText += MessageFormat.format(pattern, paramArrayAssignRoleDS);
+                         messageText += MessageFormat.format(pattern, paramArrayAssignRoleDS);
+                         messageText += messageText.concat(bundle.getString("notification.email.closing"));
+                         messageText += getDatasetAuthorsEmailClosing(dataset);
                     }
                     if (dvObjTypeStr.equals("dataverse")){
-                        pattern = ResourceBundle.getBundle("Bundle").getString("notification.access.granted.fileDownloader.additionalDataverse");
+                        pattern = bundle.getString("notification.access.granted.fileDownloader.additionalDataverse");
                          String[]  paramArrayAssignRoleDV = {" "};
                         messageText += MessageFormat.format(pattern, paramArrayAssignRoleDV);
+                        messageText = messageText.concat(bundle.getString("notification.email.closing"));
+                        pattern = bundle.getString("notification.email.closing.onbehalf").replace("{0}", "");
+                        messageText = messageText.concat(pattern);
                     }                   
                 }
+                
                 return messageText;
             case REVOKEROLE:
                 dvObj = (DvObject) targetObject;
@@ -470,6 +480,8 @@ public class MailServiceBean implements java.io.Serializable {
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.revokeRole");
                 String[] paramArrayRevokeRole = {dvObjTypeStr, dvObj.getDisplayName(), dvObjURL};
                 messageText += MessageFormat.format(pattern, paramArrayRevokeRole);
+                messageText = messageText.concat(bundle.getString("notification.email.closing"));
+                
                 return messageText;
             case CREATEDV:
                 Dataverse dataverse = (Dataverse) targetObject;
@@ -489,12 +501,18 @@ public class MailServiceBean implements java.io.Serializable {
                         systemConfig.getGuidesBaseUrl(),
                         systemConfig.getGuidesVersion()));
                 logger.fine(dataverseCreatedMessage);
-                return messageText += dataverseCreatedMessage;
+                 
+                messageText += dataverseCreatedMessage;
+                messageText += bundle.getString("notification.email.closing");
+                return messageText;
             case REQUESTFILEACCESS:
                 DataFile datafile = (DataFile) targetObject;
+                dataset = datafile.getOwner();
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.requestFileAccess");
                 String[] paramArrayRequestFileAccess = {datafile.getOwner().getDisplayName(), getDatasetManageFileAccessLink(datafile)};
                 messageText += MessageFormat.format(pattern, paramArrayRequestFileAccess);
+                messageText += bundle.getString("notification.email.closing");
+                messageText += getDatasetAuthorsEmailClosing(dataset);
                 return messageText;
             case REQUESTEDFILEACCESS:
                 datafile = (DataFile) targetObject;
@@ -502,18 +520,24 @@ public class MailServiceBean implements java.io.Serializable {
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.requestedFileAccess");
                 String[] paramArrayRequestedFileAccess = {dataset.getDisplayName(),getDatasetLink(dataset)};
                 messageText += MessageFormat.format(pattern, paramArrayRequestedFileAccess);
+                messageText += bundle.getString("notification.email.closing");
+                messageText += getDatasetAuthorsEmailClosing(dataset);
                 return messageText;
             case GRANTFILEACCESS:
                 dataset = (Dataset) targetObject;
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.grantFileAccess");
                 String[] paramArrayGrantFileAccess = {dataset.getDisplayName(), getDatasetLink(dataset)};
                 messageText += MessageFormat.format(pattern, paramArrayGrantFileAccess);
+                messageText += bundle.getString("notification.email.closing");
+                messageText += getDatasetAuthorsEmailClosing(dataset);
                 return messageText;
             case REJECTFILEACCESS:
                 dataset = (Dataset) targetObject;
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.rejectFileAccess");
                 String[] paramArrayRejectFileAccess = {dataset.getDisplayName(), getDatasetLink(dataset)};
                 messageText += MessageFormat.format(pattern, paramArrayRejectFileAccess);
+                messageText += bundle.getString("notification.email.closing");
+                messageText += getDatasetAuthorsEmailClosing(dataset);
                 return messageText;
             case REFERFILEACCESS:
                 datafile = (DataFile) targetObject;
@@ -526,6 +550,7 @@ public class MailServiceBean implements java.io.Serializable {
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.referredFileAccess");
                 String[] paramArrayReferredFileAccess = {datafile.getOwner().getDisplayName(), getDatasetManageFileAccessLink(datafile)};
                 messageText += MessageFormat.format(pattern, paramArrayReferredFileAccess);
+                messageText += bundle.getString("notification.email.closing");
                 return messageText;
             case CREATEDS:
                 version =  (DatasetVersion) targetObject;
@@ -538,12 +563,15 @@ public class MailServiceBean implements java.io.Serializable {
                         systemConfig.getGuidesVersion()
                 ));
                 logger.fine(datasetCreatedMessage);
-                return messageText += datasetCreatedMessage;
+                messageText += datasetCreatedMessage;
+                messageText += bundle.getString("notification.email.closing");
+                return messageText;
             case MAPLAYERUPDATED:
                 version =  (DatasetVersion) targetObject;
                 pattern = ResourceBundle.getBundle("Bundle").getString("notification.email.worldMap.added");
                 String[] paramArrayMapLayer = {version.getDataset().getDisplayName(), getDatasetLink(version.getDataset())};
                 messageText += MessageFormat.format(pattern, paramArrayMapLayer);
+                messageText += bundle.getString("notification.email.closing");
                 return messageText;                   
             case SUBMITTEDDS:
                 version =  (DatasetVersion) targetObject;
@@ -551,6 +579,7 @@ public class MailServiceBean implements java.io.Serializable {
                 String[] paramArraySubmittedDataset = {version.getDataset().getDisplayName(), getDatasetDraftLink(version.getDataset()), 
                     version.getDataset().getOwner().getDisplayName(),  getDataverseLink(version.getDataset().getOwner())};
                 messageText += MessageFormat.format(pattern, paramArraySubmittedDataset);
+                messageText += bundle.getString("notification.email.closing");
                 return messageText;
             case PUBLISHEDDS:
                 version =  (DatasetVersion) targetObject;
@@ -558,6 +587,7 @@ public class MailServiceBean implements java.io.Serializable {
                 String[] paramArrayPublishedDataset = {version.getDataset().getDisplayName(), getDatasetLink(version.getDataset()), 
                     version.getDataset().getOwner().getDisplayName(),  getDataverseLink(version.getDataset().getOwner())};
                 messageText += MessageFormat.format(pattern, paramArrayPublishedDataset);
+                messageText += bundle.getString("notification.email.closing");
                 return messageText;
             case RETURNEDDS:
                 version =  (DatasetVersion) targetObject;
@@ -565,6 +595,7 @@ public class MailServiceBean implements java.io.Serializable {
                 String[] paramArrayReturnedDataset = {version.getDataset().getDisplayName(), getDatasetDraftLink(version.getDataset()), 
                     version.getDataset().getOwner().getDisplayName(),  getDataverseLink(version.getDataset().getOwner())};
                 messageText += MessageFormat.format(pattern, paramArrayReturnedDataset);
+                messageText += bundle.getString("notification.email.closing");
                 return messageText;
             case CREATEACC:
                 String accountCreatedMessage = BundleUtil.getStringFromBundle("notification.email.welcome", Arrays.asList(
@@ -574,7 +605,9 @@ public class MailServiceBean implements java.io.Serializable {
                 String optionalConfirmEmailAddon = confirmEmailService.optionalConfirmEmailAddonMsg(userNotification.getUser());
                 accountCreatedMessage += optionalConfirmEmailAddon;
                 logger.fine("accountCreatedMessage: " + accountCreatedMessage);
-                return messageText += accountCreatedMessage;
+                messageText += accountCreatedMessage;
+                messageText += bundle.getString("notification.email.closing");
+                return messageText;
 
             case CHECKSUMFAIL:
                 version =  (DatasetVersion) targetObject;
@@ -582,7 +615,9 @@ public class MailServiceBean implements java.io.Serializable {
                         version.getDataset().getGlobalId()
                 ));
                 logger.info("checksumFailMsg: " + checksumFailMsg);
-                return messageText += checksumFailMsg;
+                messageText += checksumFailMsg;
+                messageText += bundle.getString("notification.email.closing");
+                return messageText;
 
             case FILESYSTEMIMPORT:
                 version =  (DatasetVersion) targetObject;
@@ -592,7 +627,9 @@ public class MailServiceBean implements java.io.Serializable {
                         version.getDataset().getDisplayName()
                 ));
                 logger.info("fileImportMsg: " + fileImportMsg);
-                return messageText += fileImportMsg;
+                messageText += fileImportMsg;
+                messageText += bundle.getString("notification.email.closing");
+                return messageText;
 
             case CHECKSUMIMPORT:
                 version =  (DatasetVersion) targetObject;
@@ -601,12 +638,33 @@ public class MailServiceBean implements java.io.Serializable {
                         version.getDataset().getDisplayName()
                 ));
                 logger.info("checksumImportMsg: " + checksumImportMsg);
-                return messageText += checksumImportMsg;
+                messageText += checksumImportMsg;
+                messageText += bundle.getString("notification.email.closing");
+                return messageText;
 
         }
         
         return "";
     }
+    
+    private String getDatasetAuthorsEmailClosing(Dataset dataset){
+        String emailClosing = ResourceBundle.getBundle("Bundle").getString("notification.email.closing.onbehalf");;
+        
+        String authorsStr = dataset.getLatestVersion().getAuthorsStr();
+                        
+        if( authorsStr != null && authorsStr.trim().length() > 0){
+            authorsStr = ": ".concat(authorsStr.trim());
+        } else {
+            authorsStr = "";
+        }
+        
+        String[] paramOnBehalf = {authorsStr};
+        emailClosing = MessageFormat.format(emailClosing, paramOnBehalf);
+
+        return emailClosing;
+    }
+    
+    
     
     private Object getObjectOfNotification (UserNotification userNotification){
         switch (userNotification.getType()) {
@@ -665,4 +723,5 @@ public class MailServiceBean implements java.io.Serializable {
         return null; 
     }
 
+    private String getEmailEnding()
 }

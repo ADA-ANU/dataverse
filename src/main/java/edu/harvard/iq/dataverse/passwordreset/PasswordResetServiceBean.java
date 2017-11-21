@@ -87,6 +87,8 @@ public class PasswordResetServiceBean {
                  * which the password reset originated.
                  */
                 + "Please contact us if you did not request this password reset or need further help.\n\n";
+        java.util.ResourceBundle propsBundle = java.util.ResourceBundle.getBundle("Bundle");
+        messageBody = messageBody.concat(propsBundle.getString("notification.email.closing"));
         try {
             String toAddress = aUser.getEmail();
             String subject = "Dataverse Password Reset Requested";
@@ -241,6 +243,9 @@ public class PasswordResetServiceBean {
             String messageBody = "Hi " + user.getDisplayName() + ",\n\n"
                     + "Your Dataverse account password was successfully changed.\n\n"
                     + "Please contact us if you did not request this password reset or need further help.\n\n";
+            
+            java.util.ResourceBundle propsBundle = java.util.ResourceBundle.getBundle("Bundle");
+            messageBody = messageBody.concat(propsBundle.getString("notification.email.closing"));
             mailService.sendSystemEmail(toAddress, subject, messageBody);
             return new PasswordChangeAttemptResponse(true, messageSummary, messageDetail);
         } else {

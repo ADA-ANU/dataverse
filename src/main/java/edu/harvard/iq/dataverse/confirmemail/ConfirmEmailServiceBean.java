@@ -98,6 +98,7 @@ public class ConfirmEmailServiceBean {
                 confirmationUrl,
                 ConfirmEmailUtil.friendlyExpirationTime(systemConfig.getMinutesUntilConfirmEmailTokenExpires())
         ));
+        messageBody = messageBody.concat(BundleUtil.getStringFromBundle("notification.email.closing"));
         logger.log(Level.FINE, "messageBody:{0}", messageBody);
 
         try {
