@@ -76,6 +76,8 @@ public class FileDownloadHelper implements java.io.Serializable {
         //logger.info("calling candownloadfile on filemetadata "+fid);
         boolean isRestrictedFile = fileMetadata.isRestricted();
         
+        System.out.println(fileMetadata.getDataFile().getId() + ": " + fileMetadata.getDataFile().getDisplayName() + " isRestrictedFile: " + isRestrictedFile);
+        
         // --------------------------------------------------------------------
         // Has this file been checked? Look at the DatasetPage hash
         // --------------------------------------------------------------------
@@ -105,13 +107,10 @@ public class FileDownloadHelper implements java.io.Serializable {
         // --------------------------------------------------------------------
         if (!isRestrictedFile){
             // Yes, save answer and return true
-            System.out.println("FileDownloadHelper not Restricted File");
             this.fileDownloadPermissionMap.put(fid, true);
             return true;
         }
         
-        System.out.println("FileDownloadHelper Restricted File");
-                 
         // --------------------------------------------------------------------
         // Conditions (2) through (4) are for Restricted files
         // --------------------------------------------------------------------
