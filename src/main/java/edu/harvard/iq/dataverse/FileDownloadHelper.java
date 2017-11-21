@@ -76,7 +76,7 @@ public class FileDownloadHelper implements java.io.Serializable {
         //logger.info("calling candownloadfile on filemetadata "+fid);
         boolean isRestrictedFile = fileMetadata.isRestricted();
         
-        System.out.println(fileMetadata.getDataFile().getId() + ": " + fileMetadata.getDataFile().getDisplayName() + " isRestrictedFile: " + isRestrictedFile);
+        System.out.println(fileMetadata.getDataFile().getId() + " isRestrictedFile: " + isRestrictedFile);
         
         // --------------------------------------------------------------------
         // Has this file been checked? Look at the DatasetPage hash
