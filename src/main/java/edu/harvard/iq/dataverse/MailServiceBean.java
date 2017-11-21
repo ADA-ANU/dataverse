@@ -212,6 +212,7 @@ public class MailServiceBean implements java.io.Serializable {
                String messageText = getMessageTextBasedOnNotification(notification, objectOfNotification);
                String subjectText = getSubjectTextBasedOnNotification(notification);              
                if (!(messageText.isEmpty() || subjectText.isEmpty())){
+                    messageText = messageText.concat(msgTextToAppend);
                     retval = sendSystemEmail(emailAddress, subjectText, messageText); 
                } else {
                    logger.warning("Skipping " + notification.getType() +  " notification, because couldn't get valid message");
