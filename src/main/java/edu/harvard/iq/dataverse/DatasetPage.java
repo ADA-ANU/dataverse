@@ -3392,8 +3392,8 @@ public class DatasetPage implements java.io.Serializable {
         return FileUtil.isDownloadPopupRequired(workingVersion);
     }
    
-    public boolean isDownloadPopupReuired(FileMetadata fmd){
-        return FileUtil.isDownloadPopupRequired(fmd);
+    public boolean isDownloadPopupRequired(FileMetadata fmd){
+        return FileUtil.isFileDownloadPopupRequired(fmd);
     }
     
     public String requestAccessMultipleRestrictedFiles(){
