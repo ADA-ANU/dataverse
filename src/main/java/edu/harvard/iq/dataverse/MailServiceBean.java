@@ -220,8 +220,9 @@ public class MailServiceBean implements java.io.Serializable {
                     //this is a COMPLETE and TOTAL HACK to get the subject in the right format for REQUESTFILEACCESS emails sent to
                     //DatasetPermission Users - if this isn't done, then the DatasetPermission user's name and userid are sent in the
                     //subject email rather than the user's that actually requested access
-                    if(notification.getType().equals("REQUESTFILEACCESS")){
-                        subjectText.replace("<requesterFullName>", sessionUser.getName()).replace("<requesterUsername>", sessionUser.getIdentifier());
+                    switch (notification.getType()) {
+                        case REQUESTFILEACCESS:
+                            subjectText.replace("<requesterFullName>", sessionUser.getName()).replace("<requesterUsername>", sessionUser.getIdentifier());
                     }
                     messageText = messageText.concat(msgTextToAppend);
                     retval = sendSystemEmail(emailAddress, subjectText, messageText); 
@@ -263,7 +264,7 @@ public class MailServiceBean implements java.io.Serializable {
                 //String requesterFullName = userNotification.getUser().getName();
                 //String requesterUsername = userNotification.getUser().getIdentifier().replace("@", ""); //@causes problems with OSTicket
                 String requesterFullName = "<requesterFullName>";
-                String requesterUsername = "(<requesterUsername>)";
+                String requesterUsername = "<requesterUsername>";
                         
                 dvObj = (DvObject)objOfNotif;
                 dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
