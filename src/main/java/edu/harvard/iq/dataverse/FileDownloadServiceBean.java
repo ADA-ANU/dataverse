@@ -400,7 +400,7 @@ public class FileDownloadServiceBean implements java.io.Serializable {
         String startDemarcation = "\n\n\n".concat(demarcation).concat("\n\n");
         
         String separator = ": ";
-        
+        String noResponse = "-----";
         String gbDetails = startDemarcation;
         
         java.util.ResourceBundle propsBundle = java.util.ResourceBundle.getBundle("Bundle");
@@ -410,9 +410,16 @@ public class FileDownloadServiceBean implements java.io.Serializable {
         gbDetails = gbDetails.concat("\n");
         gbDetails = gbDetails.concat(propsBundle.getString("email")).concat(separator).concat(gb.getEmail().trim());
         gbDetails = gbDetails.concat("\n");
-        gbDetails = gbDetails.concat(propsBundle.getString("institution")).concat(separator).concat(gb.getInstitution().trim());
+        
+        String resp = gb.getInstitution();
+        resp = (resp == null || resp.trim().length() == 0) ? noResponse : resp.trim();
+       
+        gbDetails = gbDetails.concat(propsBundle.getString("institution")).concat(separator).concat(resp);
         gbDetails = gbDetails.concat("\n");
-        gbDetails = gbDetails.concat(propsBundle.getString("position")).concat(separator).concat(gb.getPosition().trim());
+        
+        resp = gb.getPosition();
+        resp = (resp == null || resp.trim().length() == 0) ? noResponse : resp.trim();
+        gbDetails = gbDetails.concat(propsBundle.getString("position")).concat(separator).concat(resp);
         gbDetails = gbDetails.concat("\n");
         
         List<CustomQuestionResponse> cqrsList = gb.getCustomQuestionResponses();
@@ -425,22 +432,26 @@ public class FileDownloadServiceBean implements java.io.Serializable {
             
             for(CustomQuestionResponse cqr: cqrsList){
                 questionText = cqr.getCustomQuestion().getQuestionString();
-                if(questionText != null){
+                /*if(questionText != null){
                     questionText = questionText.trim();
                 }
                 else {
-                    questionText = "-----";
-                }
+                    questionText = noResponse;
+                }*/
+                
+                questionText = (questionText == null || questionText.trim().length() == 0) ? noResponse : questionText.trim();
                 
                 questionAnswer = cqr.getResponse();
-                if(questionAnswer != null){
+                /*if(questionAnswer != null){
                     questionAnswer = questionAnswer.trim();
                 }
                 else{ 
                     questionAnswer = "-----";
-                }
+                }*/
                 
-                gbDetails = gbDetails.concat(questionText).concat(": ").concat(questionAnswer).concat("\n\n");
+                questionAnswer = (questionAnswer == null || questionAnswer.trim().length() == 0) ? noResponse : questionAnswer.trim();
+                
+                gbDetails = gbDetails.concat(questionText).concat(separator).concat(questionAnswer).concat("\n\n");
                 
                 questionText = null;
                 questionAnswer = null;
