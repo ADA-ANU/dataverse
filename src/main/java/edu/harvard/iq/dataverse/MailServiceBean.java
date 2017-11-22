@@ -203,15 +203,26 @@ public class MailServiceBean implements java.io.Serializable {
         return retval;
     }
     
-    public Boolean sendNotificationEmail(UserNotification notification, String msgTextToAppend){        
+    public Boolean sendNotificationEmail(UserNotification notification, String msgTextToAppend, AuthenticatedUser sessionUser){        
         boolean retval = false;
         String emailAddress = getUserEmailAddress(notification);
         if (emailAddress != null){
            Object objectOfNotification =  getObjectOfNotification(notification);
            if (objectOfNotification != null){
                String messageText = getMessageTextBasedOnNotification(notification, objectOfNotification);
-               String subjectText = getSubjectTextBasedOnNotification(notification);              
+               String subjectText = getSubjectTextBasedOnNotification(notification);
+               
+               //this is a COMPLETE and TOTAL HACK to get the subject in the right format for REQUESTFILEACCESS emails sent to
+               //DatasetPermission Users - if this isn't done, then the DatasetPermission user's name and userid are sent in the
+               //subject email rather than the user's that actually requested access
+               
                if (!(messageText.isEmpty() || subjectText.isEmpty())){
+                    //this is a COMPLETE and TOTAL HACK to get the subject in the right format for REQUESTFILEACCESS emails sent to
+                    //DatasetPermission Users - if this isn't done, then the DatasetPermission user's name and userid are sent in the
+                    //subject email rather than the user's that actually requested access
+                    if(notification.getType().equals("REQUESTFILEACCESS")){
+                        subjectText.replace("<requesterFullName>", sessionUser.getName()).replace("<requesterUsername>", sessionUser.getIdentifier());
+                    }
                     messageText = messageText.concat(msgTextToAppend);
                     retval = sendSystemEmail(emailAddress, subjectText, messageText); 
                } else {
@@ -249,9 +260,11 @@ public class MailServiceBean implements java.io.Serializable {
                 
                 return subjectText;
             case REQUESTFILEACCESS:
-                String requesterFullName = userNotification.getUser().getName();
-                String requesterUsername = userNotification.getUser().getIdentifier().replace("@", ""); //@causes problems with OSTicket
-
+                //String requesterFullName = userNotification.getUser().getName();
+                //String requesterUsername = userNotification.getUser().getIdentifier().replace("@", ""); //@causes problems with OSTicket
+                String requesterFullName = "<requesterFullName>";
+                String requesterUsername = "<requesterUsername>";
+                        
                 dvObj = (DvObject)objOfNotif;
                 dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
 
