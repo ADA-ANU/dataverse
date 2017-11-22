@@ -250,7 +250,8 @@ public class MailServiceBean implements java.io.Serializable {
                 return subjectText;
             case REQUESTFILEACCESS:
                 String requesterFullName = userNotification.getUser().getName();
-                String requesterUsername = userNotification.getUser().getIdentifier();
+                String requesterUsername = userNotification.getUser().getIdentifier().replace("@", ""); //@causes problems with OSTicket
+
                 dvObj = (DvObject)objOfNotif;
                 dvObjName = dvObj.getOwner().getDisplayName(); //get the dataset's name, not the file name - use getOwner
 
