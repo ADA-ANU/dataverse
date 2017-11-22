@@ -3392,6 +3392,10 @@ public class DatasetPage implements java.io.Serializable {
         return FileUtil.isDownloadPopupRequired(workingVersion);
     }
    
+    public boolean isDownloadPopupReuired(FileMetadata fmd){
+        return FileUtil.isDownloadPopupRequired(fmd);
+    }
+    
     public String requestAccessMultipleRestrictedFiles(){
         this.filterSelectedRestrictedFiles();
         return requestAccessMultipleFiles(this.getSelectedRestrictedFilesIdsString());
