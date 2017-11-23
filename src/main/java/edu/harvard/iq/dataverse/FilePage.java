@@ -165,9 +165,8 @@ public class FilePage implements java.io.Serializable {
         if(fileMetadata.getId() == null || fileMetadata.getDatasetVersion().getId() == null ){
             return false;
         }
-        return FileUtil.isDownloadPopupRequired(fileMetadata.getDatasetVersion());
+        return FileUtil.isFileDownloadPopupRequired(fileMetadata);
     }
-
 
     public void setFileMetadata(FileMetadata fileMetadata) {
         this.fileMetadata = fileMetadata;
