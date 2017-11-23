@@ -356,20 +356,34 @@ public class FileDownloadServiceBean implements java.io.Serializable {
         return false;
     }    
     
-    public void sendRequestFileAccessNotification(Dataset dataset, Long fileId) {
+    /*public void sendRequestFileAccessNotification(Dataset dataset, Long fileId) {
         Timestamp ts = new Timestamp(new Date().getTime());
         permissionService.getUsersWithPermissionOn(Permission.ManageDatasetPermissions, dataset).stream().forEach((au) -> {
             userNotificationService.sendNotification(au, ts, UserNotification.Type.REQUESTFILEACCESS, fileId);
         });
 
         userNotificationService.sendNotification((AuthenticatedUser) session.getUser(), ts, UserNotification.Type.REQUESTEDFILEACCESS, fileId);
-    }    
+    }*/
+    
+    public void sendRequestFileAccessNotification(Dataset dataset, Long fileId) {
+        Timestamp ts = new Timestamp(new Date().getTime());
+        
+        sendRequestFileAccessNotification(dataset,fileId,null);
+        
+        /*permissionService.getUsersWithPermissionOn(Permission.ManageDatasetPermissions, dataset).stream().forEach((au) -> {
+            userNotificationService.sendNotification(au, ts, UserNotification.Type.REQUESTFILEACCESS, fileId);
+        });
+
+        userNotificationService.sendNotification((AuthenticatedUser) session.getUser(), ts, UserNotification.Type.REQUESTEDFILEACCESS, fileId);
+        */
+    }
     
     public void sendRequestFileAccessNotification(Dataset dataset, Long fileId, GuestbookResponse gb){
         Timestamp ts = new Timestamp(new Date().getTime()); 
         UserNotification un = null;
-        String appendMsgText = this.getGuestbookAppendEmailDetails(gb);
-                
+        
+        String appendMsgText = (gb == null)?("") : this.getGuestbookAppendEmailDetails(gb);
+            
         List<AuthenticatedUser> mngDsPermUsers = permissionService.getUsersWithPermissionOn(Permission.ManageDatasetPermissions, dataset);
         
         for (AuthenticatedUser au : mngDsPermUsers){
