@@ -1228,7 +1228,7 @@ public class FileUtil implements java.io.Serializable  {
         DatasetVersion dsVersion = fileMetadata.getDatasetVersion();
         
         //if the fileMetadata is not restricted, just let people download regardless of guestbook, tofA, tofU status
-        if(dsVersion == null || !dsVersion.isReleased() || !fileMetadata.isRestricted()){
+        if(fileMetadata.getId() == null || dsVersion == null || fileMetadata.getDatasetVersion().getId() == null|| !dsVersion.isReleased() || !fileMetadata.isRestricted()){
             required = false;
         } else {
             required = isDownloadPopupRequired(dsVersion);
