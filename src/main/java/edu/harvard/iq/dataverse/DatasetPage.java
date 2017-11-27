@@ -1706,16 +1706,17 @@ public class DatasetPage implements java.io.Serializable {
         this.selectedNonDownloadableFiles = selectedNonDownloadableFiles;
     }
     
+    public void validateFilesForDownload(){
+        
+    }
             
     public void validateFilesForDownload(boolean guestbookRequired){
-        RequestContext requestContext = RequestContext.getCurrentInstance();
-        requestContext.execute("alert('validateFilesForDownload');");
-            
+           
         setSelectedDownloadableFiles(new ArrayList<>());
         setSelectedNonDownloadableFiles(new ArrayList<>());
         
         if (this.selectedFiles.isEmpty()) {
-            //RequestContext requestContext = RequestContext.getCurrentInstance();
+            RequestContext requestContext = RequestContext.getCurrentInstance();
             requestContext.execute("PF('selectFilesForDownload').show()");
             return;
         }
@@ -1738,17 +1739,13 @@ public class DatasetPage implements java.io.Serializable {
             popupRequired = isDownloadPopupRequired(fmd);
             
             if(canDownload){
-                requestContext.execute("alert('validateFilesForDownload canDownload: yes');");
                 if(popupRequired){
-                    requestContext.execute("alert('validateFilesForDownload popupRequired: yes');");
                     getSelectedNonDownloadableFiles().add(fmd);
                 } else {
-                    requestContext.execute("alert('validateFilesForDownload popupRequired: no');");
                     getSelectedDownloadableFiles().add(fmd);
                 }
                
             } else {
-                requestContext.execute("alert('validateFilesForDownload canDownload: no');");
                 getSelectedNonDownloadableFiles().add(fmd);
             }
         }
@@ -1756,21 +1753,23 @@ public class DatasetPage implements java.io.Serializable {
         //if there is at least one downloadable and no non-downloadable files selected, then
         //allow download
         if(!getSelectedDownloadableFiles().isEmpty() && getSelectedNonDownloadableFiles().isEmpty()){
-            if (guestbookRequired){
-                modifyGuestbookMultipleResponse();
+            /*if (guestbookRequired){
+                modifyGuestbookMultipleResponse(); //WHY???
             } else{
                 startMultipleFileDownload(false);
-            }        
+            }*/
+            
+            startMultipleFileDownload(false);
         }
 
         if(getSelectedDownloadableFiles().isEmpty() && !getSelectedNonDownloadableFiles().isEmpty()){
-            //RequestContext requestContext = RequestContext.getCurrentInstance();
+            RequestContext requestContext = RequestContext.getCurrentInstance();
             requestContext.execute("PF('downloadInvalid').show()");
             return;
         } 
         
         if(!getSelectedDownloadableFiles().isEmpty() && !getSelectedNonDownloadableFiles().isEmpty()){
-            //RequestContext requestContext = RequestContext.getCurrentInstance();
+            RequestContext requestContext = RequestContext.getCurrentInstance();
             requestContext.execute("PF('downloadMixed').show()");
         }       
 
@@ -2467,11 +2466,7 @@ public class DatasetPage implements java.io.Serializable {
     }
         
     public void startMultipleFileDownload(Boolean writeGuestbook){
-        RequestContext requestContext = RequestContext.getCurrentInstance();
-        requestContext.execute("alert('startMultipleFileDownload');");
-        
         fileDownloadService.callDownloadServlet(getDownloadableFilesIdsString(), writeGuestbook);
-
     }
  
     private String downloadType = "";
@@ -2508,11 +2503,8 @@ public class DatasetPage implements java.io.Serializable {
     }
      
     public void modifyGuestbookMultipleResponse(){
-        RequestContext requestContext = RequestContext.getCurrentInstance();
-        requestContext.execute("alert('modifyGuestbookMultipleResponse');");
-        
         if (this.selectedFiles.isEmpty()) {
-            //RequestContext requestContext = RequestContext.getCurrentInstance();
+            RequestContext requestContext = RequestContext.getCurrentInstance();
             requestContext.execute("PF('selectFilesForDownload').show()");
             return;
         }
@@ -2520,7 +2512,7 @@ public class DatasetPage implements java.io.Serializable {
          this.guestbookResponse = this.guestbookResponseService.modifySelectedFileIds(guestbookResponse, getSelectedDownloadableFilesIdsString());
          this.guestbookResponse.setDownloadtype("Download");
          this.guestbookResponse.setFileFormat("Download");
-        //RequestContext requestContext = RequestContext.getCurrentInstance();
+        RequestContext requestContext = RequestContext.getCurrentInstance();
         requestContext.execute("PF('downloadPopup').show();handleResizeDialog('downloadPopup');");
     }
     
