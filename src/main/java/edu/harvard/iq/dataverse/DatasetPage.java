@@ -1708,11 +1708,14 @@ public class DatasetPage implements java.io.Serializable {
     
             
     public void validateFilesForDownload(boolean guestbookRequired){
+        RequestContext requestContext = RequestContext.getCurrentInstance();
+        requestContext.execute("alert('validateFilesForDownload');");
+            
         setSelectedDownloadableFiles(new ArrayList<>());
         setSelectedNonDownloadableFiles(new ArrayList<>());
         
         if (this.selectedFiles.isEmpty()) {
-            RequestContext requestContext = RequestContext.getCurrentInstance();
+            //RequestContext requestContext = RequestContext.getCurrentInstance();
             requestContext.execute("PF('selectFilesForDownload').show()");
             return;
         }
@@ -1756,13 +1759,13 @@ public class DatasetPage implements java.io.Serializable {
         }
 
         if(getSelectedDownloadableFiles().isEmpty() && !getSelectedNonDownloadableFiles().isEmpty()){
-            RequestContext requestContext = RequestContext.getCurrentInstance();
+            //RequestContext requestContext = RequestContext.getCurrentInstance();
             requestContext.execute("PF('downloadInvalid').show()");
             return;
         } 
         
         if(!getSelectedDownloadableFiles().isEmpty() && !getSelectedNonDownloadableFiles().isEmpty()){
-            RequestContext requestContext = RequestContext.getCurrentInstance();
+            //RequestContext requestContext = RequestContext.getCurrentInstance();
             requestContext.execute("PF('downloadMixed').show()");
         }       
 
