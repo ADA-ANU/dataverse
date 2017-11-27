@@ -2509,7 +2509,7 @@ public class DatasetPage implements java.io.Serializable {
      
     public void modifyGuestbookMultipleResponse(){
         RequestContext requestContext = RequestContext.getCurrentInstance();
-        requestContext.execute("alert(modifyGuestbookMultipleResponse);");
+        requestContext.execute("alert('modifyGuestbookMultipleResponse');");
         
         if (this.selectedFiles.isEmpty()) {
             //RequestContext requestContext = RequestContext.getCurrentInstance();
