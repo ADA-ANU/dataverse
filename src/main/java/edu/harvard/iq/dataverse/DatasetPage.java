@@ -1718,13 +1718,34 @@ public class DatasetPage implements java.io.Serializable {
         }
         
         
-        for (FileMetadata fmd : this.selectedFiles){
+        /*for (FileMetadata fmd : this.selectedFiles){
             if(this.fileDownloadHelper.canDownloadFile(fmd)){
                 getSelectedDownloadableFiles().add(fmd);
             } else {
                 getSelectedNonDownloadableFiles().add(fmd);
             }
-        }           
+        }*/
+        
+        boolean canDownload = false;
+        boolean popupRequired = false;
+        
+        for (FileMetadata fmd : this.selectedFiles){
+            
+            canDownload = fileDownloadHelper.canDownloadFile(fmd);
+            popupRequired = isDownloadPopupRequired(fmd);
+            
+            if(canDownload){
+                if(!popupRequired){
+                    getSelectedDownloadableFiles().add(fmd);
+                } else {
+                    getSelectedNonDownloadableFiles().add(fmd);
+                }
+               
+            } else {
+                getSelectedNonDownloadableFiles().add(fmd);
+            }
+        }
+        
         //if there is at least one downloadable and no non-downloadable files selected, then 
         if(!getSelectedDownloadableFiles().isEmpty() && getSelectedNonDownloadableFiles().isEmpty()){
             if (guestbookRequired){
