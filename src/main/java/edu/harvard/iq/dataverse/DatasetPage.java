@@ -1738,13 +1738,17 @@ public class DatasetPage implements java.io.Serializable {
             popupRequired = isDownloadPopupRequired(fmd);
             
             if(canDownload){
-                if(!popupRequired){
-                    getSelectedDownloadableFiles().add(fmd);
-                } else {
+                requestContext.execute("alert('validateFilesForDownload canDownload: yes');");
+                if(popupRequired){
+                    requestContext.execute("alert('validateFilesForDownload popupRequired: yes');");
                     getSelectedNonDownloadableFiles().add(fmd);
+                } else {
+                    requestContext.execute("alert('validateFilesForDownload popupRequired: no');");
+                    getSelectedDownloadableFiles().add(fmd);
                 }
                
             } else {
+                requestContext.execute("alert('validateFilesForDownload canDownload: no');");
                 getSelectedNonDownloadableFiles().add(fmd);
             }
         }
