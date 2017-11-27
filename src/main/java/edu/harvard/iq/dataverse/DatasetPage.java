@@ -1753,7 +1753,8 @@ public class DatasetPage implements java.io.Serializable {
             }
         }
         
-        //if there is at least one downloadable and no non-downloadable files selected, then 
+        //if there is at least one downloadable and no non-downloadable files selected, then
+        //allow download
         if(!getSelectedDownloadableFiles().isEmpty() && getSelectedNonDownloadableFiles().isEmpty()){
             if (guestbookRequired){
                 modifyGuestbookMultipleResponse();
@@ -2465,8 +2466,10 @@ public class DatasetPage implements java.io.Serializable {
         this.datasetVersionDifference = datasetVersionDifference;
     }
         
-    public void startMultipleFileDownload (Boolean writeGuestbook){
-
+    public void startMultipleFileDownload(Boolean writeGuestbook){
+        RequestContext requestContext = RequestContext.getCurrentInstance();
+        requestContext.execute("alert('startMultipleFileDownload');");
+        
         fileDownloadService.callDownloadServlet(getDownloadableFilesIdsString(), writeGuestbook);
 
     }
