@@ -1705,13 +1705,10 @@ public class DatasetPage implements java.io.Serializable {
     public void setSelectedNonDownloadableFiles(List<FileMetadata> selectedNonDownloadableFiles) {
         this.selectedNonDownloadableFiles = selectedNonDownloadableFiles;
     }
-    
+            
     public void validateFilesForDownload(){
         
-    }
-            
-    public void validateFilesForDownload(boolean guestbookRequired){
-           
+        
         setSelectedDownloadableFiles(new ArrayList<>());
         setSelectedNonDownloadableFiles(new ArrayList<>());
         
@@ -1720,16 +1717,7 @@ public class DatasetPage implements java.io.Serializable {
             requestContext.execute("PF('selectFilesForDownload').show()");
             return;
         }
-        
-        
-        /*for (FileMetadata fmd : this.selectedFiles){
-            if(this.fileDownloadHelper.canDownloadFile(fmd)){
-                getSelectedDownloadableFiles().add(fmd);
-            } else {
-                getSelectedNonDownloadableFiles().add(fmd);
-            }
-        }*/
-        
+         
         boolean canDownload = false;
         boolean popupRequired = false;
         
@@ -1753,12 +1741,6 @@ public class DatasetPage implements java.io.Serializable {
         //if there is at least one downloadable and no non-downloadable files selected, then
         //allow download
         if(!getSelectedDownloadableFiles().isEmpty() && getSelectedNonDownloadableFiles().isEmpty()){
-            /*if (guestbookRequired){
-                modifyGuestbookMultipleResponse(); //WHY???
-            } else{
-                startMultipleFileDownload(false);
-            }*/
-            
             startMultipleFileDownload(false);
         }
 
