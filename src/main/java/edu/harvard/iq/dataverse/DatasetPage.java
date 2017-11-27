@@ -2508,8 +2508,11 @@ public class DatasetPage implements java.io.Serializable {
     }
      
     public void modifyGuestbookMultipleResponse(){
+        RequestContext requestContext = RequestContext.getCurrentInstance();
+        requestContext.execute("alert(modifyGuestbookMultipleResponse);");
+        
         if (this.selectedFiles.isEmpty()) {
-            RequestContext requestContext = RequestContext.getCurrentInstance();
+            //RequestContext requestContext = RequestContext.getCurrentInstance();
             requestContext.execute("PF('selectFilesForDownload').show()");
             return;
         }
@@ -2517,7 +2520,7 @@ public class DatasetPage implements java.io.Serializable {
          this.guestbookResponse = this.guestbookResponseService.modifySelectedFileIds(guestbookResponse, getSelectedDownloadableFilesIdsString());
          this.guestbookResponse.setDownloadtype("Download");
          this.guestbookResponse.setFileFormat("Download");
-        RequestContext requestContext = RequestContext.getCurrentInstance();
+        //RequestContext requestContext = RequestContext.getCurrentInstance();
         requestContext.execute("PF('downloadPopup').show();handleResizeDialog('downloadPopup');");
     }
     
