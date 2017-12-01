@@ -1708,7 +1708,6 @@ public class DatasetPage implements java.io.Serializable {
             
     public void validateFilesForDownload(){
         
-        
         setSelectedDownloadableFiles(new ArrayList<>());
         setSelectedNonDownloadableFiles(new ArrayList<>());
         
@@ -1727,6 +1726,7 @@ public class DatasetPage implements java.io.Serializable {
             popupRequired = isDownloadPopupRequired(fmd);
             
             if(canDownload){
+          
                 if(popupRequired){
                     getSelectedNonDownloadableFiles().add(fmd);
                 } else {
@@ -1741,6 +1741,12 @@ public class DatasetPage implements java.io.Serializable {
         //if there is at least one downloadable and no non-downloadable files selected, then
         //allow download
         if(!getSelectedDownloadableFiles().isEmpty() && getSelectedNonDownloadableFiles().isEmpty()){
+            /*if (guestbookRequired){
+                modifyGuestbookMultipleResponse(); //sets the guestbook type to 'Download' then pops up the window to ask for the guestbook details
+            } else{
+                startMultipleFileDownload(false);
+            }*/
+            initGuestbookMultipleResponse(getSelectedDownloadableFilesIdsString()); //want a record of download if guest or logged in user
             startMultipleFileDownload(false);
         }
 
@@ -2485,6 +2491,8 @@ public class DatasetPage implements java.io.Serializable {
     }
      
     public void modifyGuestbookMultipleResponse(){
+        
+        
         if (this.selectedFiles.isEmpty()) {
             RequestContext requestContext = RequestContext.getCurrentInstance();
             requestContext.execute("PF('selectFilesForDownload').show()");
@@ -2529,7 +2537,7 @@ public class DatasetPage implements java.io.Serializable {
              
     }
     public void initGuestbookMultipleResponse(String selectedFileIds){
-         initGuestbookResponse(null, "download", selectedFileIds);
+         initGuestbookResponse(null, "Download", selectedFileIds);
     }
 
     public void initGuestbookResponse(FileMetadata fileMetadata, String downloadFormat, String selectedFileIds) {
