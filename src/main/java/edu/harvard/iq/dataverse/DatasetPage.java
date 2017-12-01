@@ -1720,6 +1720,8 @@ public class DatasetPage implements java.io.Serializable {
         boolean canDownload = false;
         boolean popupRequired = false;
         
+        FileMetadata lastfmd = null;
+        
         for (FileMetadata fmd : this.selectedFiles){
             
             canDownload = fileDownloadHelper.canDownloadFile(fmd);
@@ -1731,11 +1733,14 @@ public class DatasetPage implements java.io.Serializable {
                     getSelectedNonDownloadableFiles().add(fmd);
                 } else {
                     getSelectedDownloadableFiles().add(fmd);
+                    lastfmd = fmd;
                 }
                
             } else {
                 getSelectedNonDownloadableFiles().add(fmd);
             }
+            
+            
         }
         
         //if there is at least one downloadable and no non-downloadable files selected, then
@@ -1746,7 +1751,7 @@ public class DatasetPage implements java.io.Serializable {
             } else{
                 startMultipleFileDownload(false);
             }*/
-            initGuestbookMultipleResponse(getSelectedDownloadableFilesIdsString()); //want a record of download if guest or logged in user
+            initGuestbookResponse(lastfmd,"Download", getSelectedDownloadableFilesIdsString()); //want a record of download if guest or logged in user
             startMultipleFileDownload(false);
         }
 
