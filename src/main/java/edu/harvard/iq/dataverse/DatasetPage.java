@@ -1751,8 +1751,10 @@ public class DatasetPage implements java.io.Serializable {
             } else{
                 startMultipleFileDownload(false);
             }*/
-            initGuestbookResponse(lastfmd,"Download", getSelectedDownloadableFilesIdsString()); //want a record of download if guest or logged in user
-            startMultipleFileDownload(false);
+            
+            GuestbookResponse gbr = guestbookResponseService.initGuestbookResponse(lastfmd, "Download", getSelectedDownloadableFilesIdsString(), session); //want a record of download if guest or logged in user
+            fileDownloadService.writeGuestbookAndStartDownload(gbr);
+            //startMultipleFileDownload(false);
         }
 
         if(getSelectedDownloadableFiles().isEmpty() && !getSelectedNonDownloadableFiles().isEmpty()){
