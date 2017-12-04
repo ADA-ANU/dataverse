@@ -575,6 +575,9 @@ public class GuestbookResponseServiceBean {
             guestbookResponse.setSelectedFileIds(selectedFileIds);
         }
         
+        System.out.println("initGuestbookResponse fmd: " + guestbookResponse.getDataFile().toString());
+        System.out.println("initGuestbookResponse selected file ids: " + guestbookResponse.getSelectedFileIds());
+        
         if (dataset.getGuestbook() != null) {
             guestbookResponse.setGuestbook(workingVersion.getDataset().getGuestbook());
             setUserDefaultResponses(guestbookResponse, session);
