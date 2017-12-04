@@ -80,6 +80,8 @@ public class FileDownloadServiceBean implements java.io.Serializable {
         }
         
         if (guestbookResponse != null && guestbookResponse.getSelectedFileIds() != null){
+            System.out.println("writeGuestbookAndStartDownload selected file ids: " +  guestbookResponse.getSelectedFileIds());
+            
             List<String> list = new ArrayList<>(Arrays.asList(guestbookResponse.getSelectedFileIds().split(",")));
             
             for (String idAsString : list) {
