@@ -567,10 +567,14 @@ public class GuestbookResponseServiceBean {
         
         dataset = workingVersion.getDataset();
         
-        if (fileMetadata != null){
+        if (fileMetadata != null && (selectedFileIds == null || selectedFileIds.trim().length() == 0) ){
            guestbookResponse.setDataFile(fileMetadata.getDataFile());
         }
 
+        if(selectedFileIds != null && selectedFileIds.trim().length() > 0){
+            guestbookResponse.setSelectedFileIds(selectedFileIds);
+        }
+        
         if (dataset.getGuestbook() != null) {
             guestbookResponse.setGuestbook(workingVersion.getDataset().getGuestbook());
             setUserDefaultResponses(guestbookResponse, session);
