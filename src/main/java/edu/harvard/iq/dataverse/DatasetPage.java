@@ -1747,7 +1747,7 @@ public class DatasetPage implements java.io.Serializable {
         //allow download
         if(!getSelectedDownloadableFiles().isEmpty() && getSelectedNonDownloadableFiles().isEmpty()){
             GuestbookResponse gbr = guestbookResponseService.initGuestbookResponse(lastfmd, "Download", getSelectedDownloadableFilesIdsString(), session); //want a record of download if guest or logged in user
-            gbr.setDataFile(selectedDownloadFile);
+            gbr.setDataFile(null);
             gbr.setSelectedFileIds(getSelectedDownloadableFilesIdsString());
             fileDownloadService.writeGuestbookAndStartDownload(gbr);
         }
