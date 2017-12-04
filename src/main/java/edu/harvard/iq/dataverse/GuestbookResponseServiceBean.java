@@ -567,22 +567,10 @@ public class GuestbookResponseServiceBean {
         
         dataset = workingVersion.getDataset();
         
-        if (fileMetadata != null && (selectedFileIds == null || selectedFileIds.trim().length() == 0) ){
+        if (fileMetadata != null){
            guestbookResponse.setDataFile(fileMetadata.getDataFile());
         }
 
-        if(selectedFileIds != null && selectedFileIds.trim().length() > 0){
-            guestbookResponse.setSelectedFileIds(selectedFileIds);
-        }
-        
-        if( guestbookResponse.getDataFile() != null){
-            System.out.println("initGuestbookResponse fmd: " + guestbookResponse.getDataFile().toString());
-        } else {
-            System.out.println("initGuestbookResponse fmd is null");
-        }
-        
-        System.out.println("initGuestbookResponse selected file ids: " + guestbookResponse.getSelectedFileIds());
-        
         if (dataset.getGuestbook() != null) {
             guestbookResponse.setGuestbook(workingVersion.getDataset().getGuestbook());
             setUserDefaultResponses(guestbookResponse, session);
@@ -596,9 +584,11 @@ public class GuestbookResponseServiceBean {
                  guestbookResponse = initDefaultGuestbookResponse(dataset, null, session);
             }          
         }
+           
         if (dataset.getGuestbook() != null && !dataset.getGuestbook().getCustomQuestions().isEmpty()) {
             initCustomQuestions(guestbookResponse, dataset);
         }
+       
         guestbookResponse.setDownloadtype("Download");
         if(downloadFormat.toLowerCase().equals("subset")){
             guestbookResponse.setDownloadtype("Subset");

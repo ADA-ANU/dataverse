@@ -1746,16 +1746,10 @@ public class DatasetPage implements java.io.Serializable {
         //if there is at least one downloadable and no non-downloadable files selected, then
         //allow download
         if(!getSelectedDownloadableFiles().isEmpty() && getSelectedNonDownloadableFiles().isEmpty()){
-            /*if (guestbookRequired){
-                modifyGuestbookMultipleResponse(); //sets the guestbook type to 'Download' then pops up the window to ask for the guestbook details
-            } else{
-                startMultipleFileDownload(false);
-            }*/
-            
             GuestbookResponse gbr = guestbookResponseService.initGuestbookResponse(lastfmd, "Download", getSelectedDownloadableFilesIdsString(), session); //want a record of download if guest or logged in user
-            //gbr.setSelectedFileIds(getSelectedDownloadableFilesIdsString());
+            gbr.setDataFile(selectedDownloadFile);
+            gbr.setSelectedFileIds(getSelectedDownloadableFilesIdsString());
             fileDownloadService.writeGuestbookAndStartDownload(gbr);
-            //startMultipleFileDownload(false);
         }
 
         if(getSelectedDownloadableFiles().isEmpty() && !getSelectedNonDownloadableFiles().isEmpty()){
