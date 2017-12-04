@@ -1753,6 +1753,7 @@ public class DatasetPage implements java.io.Serializable {
             }*/
             
             GuestbookResponse gbr = guestbookResponseService.initGuestbookResponse(lastfmd, "Download", getSelectedDownloadableFilesIdsString(), session); //want a record of download if guest or logged in user
+            gbr.setSelectedFileIds(getSelectedDownloadableFilesIdsString());
             fileDownloadService.writeGuestbookAndStartDownload(gbr);
             //startMultipleFileDownload(false);
         }
