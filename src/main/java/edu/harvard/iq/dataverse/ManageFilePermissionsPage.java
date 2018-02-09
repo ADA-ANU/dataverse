@@ -167,7 +167,9 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
                 }
                 
                 fileMap.put(file, raList);
-                logger.info("initMaps() added file to fileMap: " + file.toString() + " with raList: " + raList.toString());
+                //logger.info("initMaps() added file to fileMap: " + file.toString() + " with raList: " + raList.toString());
+                logger.info("initMaps() fileMap now: " + fileMap);
+                
                 // populate the file access requests map
                 for (AuthenticatedUser au : file.getFileAccessRequesters()) {
                         
