@@ -785,6 +785,7 @@ public class DataFile extends DvObject implements Comparable {
 
     @Override
     public int hashCode() {
+        System.out.println("DataFile hashCode()");
         return super.hashCode();
     }
 
