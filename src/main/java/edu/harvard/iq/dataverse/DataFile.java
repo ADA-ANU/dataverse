@@ -809,6 +809,9 @@ public class DataFile extends DvObject implements Comparable {
     public int compareTo(Object o) {
         System.out.println("DataFile compareTo");
         DataFile other = (DataFile) o;
+        
+        System.out.println("comparison result of this df id: " + this.getId() + " and displayName: " + this.getDisplayName() + " compared to other df id: " + other.getId() + " and displayName " + other.getDisplayName() + ": " + this.getDisplayName().toUpperCase().compareTo(other.getDisplayName().toUpperCase()));
+        
         return this.getDisplayName().toUpperCase().compareTo(other.getDisplayName().toUpperCase());
 
     }
