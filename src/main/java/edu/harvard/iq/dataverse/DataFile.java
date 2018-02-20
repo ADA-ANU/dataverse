@@ -774,8 +774,6 @@ public class DataFile extends DvObject implements Comparable {
     
     @Override
     public boolean equals(Object object) {
-        System.out.println("DataFile equals");
-        
         if (!(object instanceof DataFile)) {
             return false;
         }
@@ -785,7 +783,6 @@ public class DataFile extends DvObject implements Comparable {
 
     @Override
     public int hashCode() {
-        System.out.println("DataFile hashCode()");
         return super.hashCode();
     }
 
@@ -807,10 +804,7 @@ public class DataFile extends DvObject implements Comparable {
     
     @Override
     public int compareTo(Object o) {
-        System.out.println("DataFile compareTo");
         DataFile other = (DataFile) o;
-        
-        System.out.println("comparison result of this df id: " + this.getId() + " and displayName: " + this.getDisplayName() + " compared to other df id: " + other.getId() + " and displayName " + other.getDisplayName() + ": " + this.getDisplayName().toUpperCase().compareTo(other.getDisplayName().toUpperCase()));
         
         return this.getDisplayName().toUpperCase().compareTo(other.getDisplayName().toUpperCase());
 

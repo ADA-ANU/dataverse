@@ -87,6 +87,13 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
     @Inject
     DataverseSession session;
 
+    java.util.Comparator<DataFile> comparator = new java.util.Comparator<DataFile>() {
+
+            public int compare(DataFile o1, DataFile o2) {
+                return o1.getId().compareTo(o2.getId());
+            }
+    };
+    
     Dataset dataset = new Dataset();
     private final TreeMap<RoleAssignee,List<RoleAssignmentRow>> roleAssigneeMap = new TreeMap<>();
     private final TreeMap<DataFile,List<RoleAssignmentRow>> fileMap = new TreeMap<>();
@@ -145,14 +152,9 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
         //don't want to hit the database for each datafile/user combo so call these methods for the dataset
         fileAccessReferredMap.putAll(datafileService.findDataFilesReferredForRequestAccess(this.dataset));
         
-        List<DataFile> dfs = dataset.getFiles();
-       
-        logger.info("Number of files from dataset.getFiles(): " + dfs.size());
-
         for (DataFile file : dataset.getFiles()) {
             // only include if the file is restricted (or its draft version is restricted)
             //Added a null check in case there are files that have no metadata records SEK 
-             logger.info("initMaps(): processing DataFile: " + file.toString());
              
              if (file.getFileMetadata() != null && (file.isRestricted() || file.getFileMetadata().isRestricted())) {
                 // we get the direct role assignments assigned to the file
@@ -165,10 +167,8 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
                         addFileToRoleAssignee(ra);                    
                     }
                 }
-                
+                               
                 fileMap.put(file, raList);
-                //logger.info("initMaps() added file to fileMap: " + file.toString() + " with raList: " + raList.toString());
-                logger.info("initMaps() fileMap now: " + fileMap);
                 
                 // populate the file access requests map
                 for (AuthenticatedUser au : file.getFileAccessRequesters()) {
@@ -185,8 +185,6 @@ public class ManageFilePermissionsPage implements java.io.Serializable {
             }  
         }
         
-        logger.info("initMaps() final size of fileMap: " + fileMap.size());
-        logger.info("initMaps() final size of fileMap keySet: " + fileMap.keySet().size());
     }
     
     private void addFileToRoleAssignee(RoleAssignment assignment) {
