@@ -45,6 +45,10 @@
                                                                                 and guestbookResponse.fileFormat != 'worldMap'}"
                            actionListener="#{fileDownloadService.writeGuestbookAndStartDownload(guestbookResponse)}"
                            oncomplete="PF('downloadPopup').hide();">
+            <!-- for Data Explorer -->
+            <f:param name="DO_GB_VALIDATION" value="true"/>
++           <f:ajax execute="@form" render="@form"  onevent="showData(#{guestbookResponse.getDataFile().getId()},'','#{dataverseLocale.locale.language}')"/>
+            <!-- end for Data Explorer -->
             </p:commandLink>
             <p:commandLink type="button" styleClass="btn btn-default" value="#{bundle.acceptTerms}" rendered="#{guestbookResponse.fileFormat == 'subset'}"
                            actionListener="#{fileDownloadService.writeGuestbookResponseRecord(guestbookResponse)}"
@@ -59,6 +63,10 @@
                            actionListener="#{fileDownloadService.startExploreDownloadLink(guestbookResponse, null)}"                           
                            oncomplete="PF('downloadPopup').hide();">
                 #{bundle['acceptTerms']}
+            <!-- for Data Explorer -->
+            <f:param name="DO_GB_VALIDATION" value="true"/> 
++           <f:ajax execute="@form" render="@form"  onevent="showData(#{guestbookResponse.getDataFile().getId()},'#{twoRavensHelper.getApiTokenKey()}', '#{dataverseLocale.locale.language}')"/>
+            <!-- end for Data Explorer -->
             </p:commandLink>
             <button type="button" class="btn btn-default" onclick="PF('downloadPopup').hide();PF('blockDatasetForm').hide();" value="#{bundle.cancel}">#{bundle.cancel}</button>
         </div>

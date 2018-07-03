@@ -67,6 +67,8 @@
                            disabled="#{fileMetadata.dataFile.ingestInProgress ? 'disabled' : ''}"
                            action="#{fileDownloadService.startExploreDownloadLink( guestbookResponse, fileMetadata )}" target="_blank">
                 <span class="glyphicon glyphicon-equalizer"/> <span class="ladda-label">#{bundle.explore}</span>
+                <!-- for Data Explorer -->
+                <f:ajax execute="@form" render="@form" onevent="showData(#{fileMetadata.dataFile.getId()},'#{twoRavensHelper.getApiTokenKey()}', '#{dataverseLocale.locale.language}')"/>
             </h:commandLink>
             <p:commandLink rendered="#{downloadPopupRequired}"
                            type="button" styleClass="btn btn-default"
