@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="button-block">
-            <p:commandLink type="button" styleClass="btn btn-default" value="#{bundle.acceptTerms}" rendered="#{guestbookResponse.fileFormat != 'explore' 
+            <p:commandLink type="button" styleClass="btn btn-default explore2" value="#{bundle.acceptTerms}" rendered="#{guestbookResponse.fileFormat != 'explore' 
                                                                                and guestbookResponse.fileFormat != 'subset'
                                                                                 and guestbookResponse.fileFormat != 'worldMap'}"
                            actionListener="#{fileDownloadService.writeGuestbookAndStartDownload(guestbookResponse)}"
@@ -59,8 +59,7 @@
                            oncomplete="PF('downloadPopup').hide();">
                 #{bundle['acceptTerms']} 
             </p:commandLink>
-            <p:commandLink type="button" styleClass="btn btn-default"  rendered="#{guestbookResponse.fileFormat == 'explore'}"
-                           actionListener="#{fileDownloadService.startExploreDownloadLink(guestbookResponse, null)}"                           
+            <p:commandLink type="button" styleClass="btn btn-default"  rendered="#{guestbookResponse.fileFormat == 'explore'}"                           
                            oncomplete="PF('downloadPopup').hide();">
                 #{bundle['acceptTerms']}
             <!-- for Data Explorer -->
