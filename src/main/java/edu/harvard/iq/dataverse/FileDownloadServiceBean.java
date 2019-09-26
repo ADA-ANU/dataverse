@@ -412,8 +412,9 @@ public class FileDownloadServiceBean implements java.io.Serializable {
         if(userEmailConfirmedTS != null){
             userEmailConfirmed = "yes";
         }
-        gbDetails = gbDetails.concat("user verified their email address: ").concat(userEmailConfirmed);
-        gbDetails = gbDetails.concat(":\n\n");
+        gbDetails = gbDetails.concat("\n");
+        gbDetails = gbDetails.concat(propsBundle.getString("notification.email.requestFileAccess.userVerifiedEmail")).concat(userEmailConfirmed);
+        gbDetails = gbDetails.concat("\n\n");
         gbDetails = gbDetails.concat(propsBundle.getString("name")).concat(separator).concat(gb.getName().trim());
         gbDetails = gbDetails.concat("\n");
         gbDetails = gbDetails.concat(propsBundle.getString("email")).concat(separator).concat(gb.getEmail().trim());
