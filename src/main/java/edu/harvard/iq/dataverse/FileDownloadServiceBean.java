@@ -404,6 +404,10 @@ public class FileDownloadServiceBean implements java.io.Serializable {
         java.util.ResourceBundle propsBundle = java.util.ResourceBundle.getBundle("Bundle");
         gbDetails = gbDetails.concat(propsBundle.getString("dataverse.permissionsFiles.assignDialog.accessRequestDetails").toUpperCase()); //want same heading in email
         gbDetails = gbDetails.concat(":\n\n"); 
+        gbDetails = gbDetails.concat("guestbookresponse_id: ").concat(Long.toString(gb.getId())); //no point in putting in Bundle.properties I don't think
+        gbDetails = gbDetails.concat("\n");
+        gbDetails = gbDetails.concat("authenticateduser_id: ").concat(Long.toString(gb.getAuthenticatedUser().getId())); //no point in putting in Bundle.properties I don't think
+        gbDetails = gbDetails.concat(":\n\n");
         gbDetails = gbDetails.concat(propsBundle.getString("name")).concat(separator).concat(gb.getName().trim());
         gbDetails = gbDetails.concat("\n");
         gbDetails = gbDetails.concat(propsBundle.getString("email")).concat(separator).concat(gb.getEmail().trim());
