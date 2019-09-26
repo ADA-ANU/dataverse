@@ -11,6 +11,7 @@ import edu.harvard.iq.dataverse.engine.command.impl.RequestAccessCommand;
 import edu.harvard.iq.dataverse.util.FileUtil;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -413,7 +414,10 @@ public class FileDownloadServiceBean implements java.io.Serializable {
             userEmailConfirmed = "yes";
         }
         gbDetails = gbDetails.concat("\n");
-        gbDetails = gbDetails.concat(propsBundle.getString("notification.email.requestFileAccess.userVerifiedEmail")).concat(userEmailConfirmed);
+        String pattern = propsBundle.getString("notification.email.requestFileAccess.userVerifiedEmail");
+        String[] params = {gb.getAuthenticatedUser().getIdentifier()};
+        String emailVerifiedTxt = MessageFormat.format(pattern, params);
+        gbDetails = gbDetails.concat(emailVerifiedTxt).concat(userEmailConfirmed);
         gbDetails = gbDetails.concat("\n\n");
         gbDetails = gbDetails.concat(propsBundle.getString("name")).concat(separator).concat(gb.getName().trim());
         gbDetails = gbDetails.concat("\n");
